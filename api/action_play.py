@@ -1,15 +1,17 @@
 import websockets
-import asyncio
 import os
+
+from api.action_build import *
 
 URL = os.getenv('URL')
 KEY = os.getenv('KEY')
-
-
-def gen_json(action):
-    action_play = '{"action": "' + action + '"}'
-    return action_play
-
+action_changed = 'true'
+action = 'jfdkfj'
 
 async with websockets.connect(f'{URL}?key={KEY}') as ws:
-    ws.send(gen_json('turn_left'))
+    play_map = ws.recv()
+
+    if action_changed == 'true':
+        ws.send(generated_json(f'{action}'))
+    else:
+        ws.send(calculated_json(f'{action}'))
