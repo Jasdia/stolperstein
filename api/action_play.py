@@ -1,5 +1,4 @@
 import os
-
 import websockets
 
 from api.json_answer import calculated_json, generated_json
