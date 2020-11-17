@@ -1,6 +1,4 @@
-import asyncio
-from asgiref.sync import async_to_sync
+from asyncio import get_event_loop
 from api.action_play import *
 
-
-asyncio.get_event_loop().run_until_complete(start_ws())
+get_event_loop().run_until_complete(start_ws())

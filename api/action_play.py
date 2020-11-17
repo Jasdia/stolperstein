@@ -1,8 +1,5 @@
 import os
-import asyncio
-import websockets
-import websockets as websockets
-
+from websockets import connect
 from api.json_answer import calculated_json, generated_json
 
 URL = os.getenv('URL')
@@ -12,7 +9,7 @@ action = 'change_nothing'
 
 
 async def start_ws():
-    async with websockets.connect(f'{URL}?key={KEY}') as websocket:
+    async with connect(f'{URL}?key={KEY}') as websocket:
         play_map = await websocket.recv()
         print(play_map)
 
