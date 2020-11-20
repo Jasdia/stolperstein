@@ -1,12 +1,13 @@
 import os
 from websockets import connect
 from api.json_answer import calculated_json, generated_json
-from json_mapping.json_class_mapper import map_json_to_dataclass
+from globale_functions.json_class_mapper import map_json_to_dataclass
 
 URL = os.getenv('URL')
 KEY = os.getenv('KEY')
 action_changed = 'true'
 action = 'change_nothing'
+amount_of_moves = 0
 
 
 async def start_ws():
