@@ -19,5 +19,4 @@ def next_move_survival_calculation(x_position, y_position, speed, direction, fie
             if 0 < x_location < x_field_size and 0 < y_location < y_field_size:
                 if field[x_location][y_location] != 0:
                     return False
-
     return True
