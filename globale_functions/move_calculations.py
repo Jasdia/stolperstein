@@ -2,7 +2,7 @@ from api.action_play import amount_of_moves
 
 
 def next_move_survival_calculation(x_position, y_position, speed, direction, field, x_field_size, y_field_size):
-    x, y = 0
+    x, y = 0, 0
     if direction == 'up':
         y = 1
     elif direction == 'down':
