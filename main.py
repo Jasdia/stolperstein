@@ -19,6 +19,7 @@ output = next_move_survival_calculation(
     data_class.players[str(data_class.you)].direction,
     data_class.cells,
     data_class.width,
-    data_class.height
+    data_class.height,
+    "change_nothing"
 )
 print(output)

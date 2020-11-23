@@ -1,4 +1,5 @@
 from api.action_play import amount_of_moves
+from math import fmod
 
 
 def next_move_survival_calculation(
@@ -8,7 +9,8 @@ def next_move_survival_calculation(
         direction,
         field,
         x_field_size,
-        y_field_size
+        y_field_size,
+        action
 ):
     x, y = 0, 0
     if direction == 'up':
@@ -19,6 +21,18 @@ def next_move_survival_calculation(
         x = -1
     else:
         x = 1
+
+    x_plus_y = x + y
+    if action == "turn_left":
+        x = fmod((x + x_plus_y), 2)
+        y = fmod((y - x_plus_y), 2)
+    elif action == "turn_right":
+        x = fmod((x - x_plus_y), 2)
+        y = fmod((y + x_plus_y), 2)
+    elif action == "slow_down":
+        speed -= 1
+    elif action == "speed_up":
+        speed += 1
 
     for n in range(1, speed):
         if amount_of_moves != 6 or n == 1 or n == speed:
