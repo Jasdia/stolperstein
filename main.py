@@ -24,11 +24,12 @@ data_class = map_json_to_dataclass(json_testfile)
 # print(type(data_class.players.get(str(data_class.you))))
 # print(data_class.players[str(data_class.you)])
 # print(type(data_class.running), data_class.running)
+print(data_class.players[str(3)]['speed'])
 output = next_move_survival_calculation(
-    data_class.players[str(data_class.you)].x,
-    data_class.players[str(data_class.you)].y,
-    data_class.players[str(data_class.you)].speed,
-    data_class.players[str(data_class.you)].direction,
+    data_class.players[str(data_class.you)]['x'],
+    data_class.players[str(data_class.you)]['y'],
+    data_class.players[str(data_class.you)]['speed'],
+    data_class.players[str(data_class.you)]['direction'],
     data_class.cells,
     data_class.width,
     data_class.height,
