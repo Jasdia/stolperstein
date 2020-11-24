@@ -21,6 +21,7 @@ from data_classes import Player
 with open("./json_testfiles/000.json", "r") as file:
     json_testfile = file.read()
 data_class = map_json_to_dataclass(json_testfile)
+
 # output = next_move_survival(
 #    data_class,
 #    str(data_class.you),

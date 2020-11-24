@@ -8,7 +8,7 @@ URL = os.getenv('URL')
 KEY = os.getenv('KEY')
 action_changed = 'true'
 action = 'change_nothing'
-amount_of_moves: int
+amount_of_moves = 0
 game_as_class: Game
 
 
