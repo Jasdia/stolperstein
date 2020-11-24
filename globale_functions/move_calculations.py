@@ -2,6 +2,23 @@ from api.action_play import amount_of_moves
 from math import fmod
 
 
+def next_move_survival(
+        data_class,
+        player_id,
+        action
+):
+    return next_move_survival_calculation(
+        data_class.players[player_id]['x'],
+        data_class.players[player_id]['y'],
+        data_class.players[player_id]['speed'],
+        data_class.players[player_id]['direction'],
+        data_class.cells,
+        data_class.width,
+        data_class.height,
+        action
+    )
+
+
 def next_move_survival_calculation(
         x_position,
         y_position,
