@@ -1,7 +1,6 @@
 # created with: https://app.quicktype.io/
 
 from dataclasses import dataclass
-from typing import List, Dict
 from datetime import datetime
 from data_classes.Player import Player
 
@@ -10,8 +9,8 @@ from data_classes.Player import Player
 class Game:
     width: int
     height: int
-    cells: List[List[int]]
-    players: Dict[str, Player]
+    cells: [[int]]
+    players: {str: Player}
     you: int
     running: bool
     deadline: datetime
