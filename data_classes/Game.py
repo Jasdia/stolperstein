@@ -10,7 +10,7 @@ class Game:
     width: int
     height: int
     cells: [[int]]
-    players: {int: Player}
+    players: {str: Player}
     you: int
     running: bool
     deadline: datetime

@@ -9,5 +9,5 @@ class SimpleGame:
     width: int
     height: int
     cells: [[int]]
-    players: {int: SimplePlayer}
+    players: {str: SimplePlayer}
     you: SimplePlayer

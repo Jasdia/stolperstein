@@ -7,7 +7,7 @@ import api.apifeedback_global_variables as api_globals
 def simplify_game_classes():
     print(api_globals.game_as_class)
     if api_globals.game_as_class.players[str(api_globals.game_as_class.you)]['active']:
-        players: {int: SimplePlayer} = {}
+        players: {str: SimplePlayer} = {}
         you = None
         for player in api_globals.game_as_class.players.items():
             if player[1]["active"]:
