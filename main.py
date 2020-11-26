@@ -25,15 +25,16 @@ apifeedback_global_variables.init()
 # Start contact to server
 # get_event_loop().run_until_complete(start_ws())
 
+# ==================================================================
 # Just for Testing:
 with open("./json_testfiles/000.json", "r") as file:
     json_testfile = file.read()
 api_globals.game_as_class = map_json_to_dataclass(json_testfile)
 print(api_globals.game_as_class)
 simplify_game_classes()
-# output = next_move_survival(
-#    data_class,
-#    str(data_class.you),
-#    "change_nothing"
-# )
-# print(output)
+output = next_move_survival(
+    api_globals.game_as_class,
+    str(api_globals.game_as_class.you),
+    "change_nothing"
+)
+print(output)

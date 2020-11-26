@@ -8,10 +8,10 @@ def next_move_survival(
         action
 ):
     return next_move_survival_calculation(
-        data_class.players[player_id]['x'],
-        data_class.players[player_id]['y'],
-        data_class.players[player_id]['speed'],
-        data_class.players[player_id]['direction'],
+        data_class.players[player_id].x,
+        data_class.players[player_id].y,
+        data_class.players[player_id].speed,
+        data_class.players[player_id].direction,
         data_class.cells,
         data_class.width,
         data_class.height,
