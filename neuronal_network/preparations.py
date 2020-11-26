@@ -1,6 +1,6 @@
 from data_classes.SimplePlayer import SimplePlayer
 from data_classes.SimpleGame import SimpleGame
-from neuronal_network.nn_globale_variables import simplified_game_class, dead_players
+from neuronal_network.nn_global_variables import simplified_game_class, dead_players
 from api.action_play import game_as_class
 
 
