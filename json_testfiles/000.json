@@ -15,7 +15,7 @@
             "y": 3,
             "direction": "right",
             "speed": 2,
-            "active": false
+            "active": true
         },
         "3": {
             "x": 3,

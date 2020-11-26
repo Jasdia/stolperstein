@@ -14,4 +14,4 @@ def init():
     global amount_of_moves
     amount_of_moves = 0
     global game_as_class
-    game_as_class = Game()
+    game_as_class = None

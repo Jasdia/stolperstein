@@ -7,5 +7,5 @@ from dataclasses import dataclass
 class SimplePlayer:
     x: int
     y: int
-    direction: str
+    direction: int
     speed: int

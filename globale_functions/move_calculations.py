@@ -1,4 +1,4 @@
-from api.action_play import amount_of_moves
+import api.apifeedback_global_variables as api_globals
 from math import fmod
 
 
@@ -52,7 +52,7 @@ def next_move_survival_calculation(
         speed += 1
 
     for n in range(1, speed):
-        if amount_of_moves != 6 or n == 1 or n == speed:
+        if api_globals.amount_of_moves != 6 or n == 1 or n == speed:
             x_location = x_position + x * n
             y_location = y_position + y * n
             if 0 < x_location < x_field_size and 0 < y_location < y_field_size:

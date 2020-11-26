@@ -6,6 +6,6 @@ dead_players: list
 
 def init():
     global simplified_game_class
-    simplified_game_class = SimpleGame()
+    simplified_game_class = None
     global dead_players
     dead_players = []
