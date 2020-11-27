@@ -12,7 +12,7 @@
 
 from asyncio import get_event_loop
 
-from api import apifeedback_global_variables
+from api import api_feedback_global_variables
 from api.action_play import *
 from globale_functions.move_calculations import next_move_survival
 from data_classes import Player
@@ -21,7 +21,7 @@ from neuronal_network.preparations import simplify_game_classes_with_evaluation,
 
 # Initialize all global-containers
 nn_global_variables.init()
-apifeedback_global_variables.init()
+api_feedback_global_variables.init()
 
 # Start contact to server
 # get_event_loop().run_until_complete(start_ws())

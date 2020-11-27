@@ -2,7 +2,7 @@ import os
 from websockets import connect
 from api.json_answer import calculated_json, generated_json
 from globale_functions.json_class_mapper import map_json_to_dataclass
-import api.apifeedback_global_variables as api_globals
+import api.api_feedback_global_variables as api_globals
 from neuronal_network.preparations import simplify_game_classes_with_evaluation, simplify_game_classes_without_evaluation
 
 URL = os.getenv('URL')

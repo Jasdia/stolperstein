@@ -1,3 +1,6 @@
+# please import this container as followed:
+# import neuronal_network.nn_global_variables as nn_globals
+
 from data_classes.SimpleGame import SimpleGame
 
 simplified_game_class: SimpleGame

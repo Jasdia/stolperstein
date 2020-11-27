@@ -1,7 +1,7 @@
 from data_classes.SimplePlayer import SimplePlayer
 from data_classes.SimpleGame import SimpleGame
 import neuronal_network.nn_global_variables as nn_globals
-import api.apifeedback_global_variables as api_globals
+import api.api_feedback_global_variables as api_globals
 
 
 # This methode maps the GameClass on the SimpleGameClass.
