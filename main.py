@@ -26,10 +26,12 @@ api_feedback_global_variables.init()
 # Start contact to server
 # get_event_loop().run_until_complete(start_ws())
 
+# ==================================================================
 # Just for Testing:
 with open("./json_testfiles/000.json", "r") as file:
     json_testfile = file.read()
 api_globals.game_as_class = map_json_to_dataclass(json_testfile)
+
 simplify_game_classes_with_evaluation()
 print("Qapla'!")
 # simplify_game_classes_without_evaluation()
@@ -39,3 +41,4 @@ print("Qapla'!")
 #    "change_nothing"
 # )
 # print(output)
+
