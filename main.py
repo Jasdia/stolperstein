@@ -1,16 +1,41 @@
-# This is a sample Python script.
+# InformatiCup 2021 - spe_ed bot
+# Team:
+# ███████╗████████╗ ██████╗ ██╗     ██████╗ ███████╗██████╗ ███████╗████████╗███████╗██╗███╗   ██╗███████╗
+# ██╔════╝╚══██╔══╝██╔═══██╗██║     ██╔══██╗██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔════╝██║████╗  ██║██╔════╝
+# ███████╗   ██║   ██║   ██║██║     ██████╔╝█████╗  ██████╔╝███████╗   ██║   █████╗  ██║██╔██╗ ██║█████╗
+# ╚════██║   ██║   ██║   ██║██║     ██╔═══╝ ██╔══╝  ██╔══██╗╚════██║   ██║   ██╔══╝  ██║██║╚██╗██║██╔══╝
+# ███████║   ██║   ╚██████╔╝███████╗██║     ███████╗██║  ██║███████║   ██║   ███████╗██║██║ ╚████║███████╗
+# ╚══════╝   ╚═╝    ╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝╚═╝  ╚═══╝╚══════╝
+# programmed by Sandra Jasmine Bernich and Jonas Marvin Huhndorf
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# ASCII-Art designed with: http://patorjk.com/software/taag/
 
+from asyncio import get_event_loop
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from api import api_feedback_global_variables
+from api.action_play import *
+from globale_functions.move_calculations import next_move_survival
+from data_classes import Player
+from neuronal_network import nn_global_variables
+from neuronal_network.preparations import simplify_game_classes_with_evaluation, simplify_game_classes_without_evaluation
 
+# Initialize all global-containers
+nn_global_variables.init()
+api_feedback_global_variables.init()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Start contact to server
+# get_event_loop().run_until_complete(start_ws())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Just for Testing:
+with open("./json_testfiles/000.json", "r") as file:
+    json_testfile = file.read()
+api_globals.game_as_class = map_json_to_dataclass(json_testfile)
+simplify_game_classes_with_evaluation()
+print("Qapla'!")
+# simplify_game_classes_without_evaluation()
+# output = next_move_survival(
+#    data_class,
+#    str(data_class.you),
+#    "change_nothing"
+# )
+# print(output)
