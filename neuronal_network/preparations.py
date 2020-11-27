@@ -10,11 +10,11 @@ import api.api_feedback_global_variables as api_globals
 # This specific method will also evaluate the last step by checking if the Game is over,
 # if we are still living and if we killed someone.
 def simplify_game_classes_with_evaluation():
-    if api_globals.game_as_class.players[str(api_globals.game_as_class.you)]['active']:
+    if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
         players: {str: SimplePlayer} = {}
         you = None
         for player in api_globals.game_as_class.players.items():
-            if player[1]["active"]:
+            if player[1].active:
                 simple_player = simple_player_mapping(player[1])
                 if player[0] == str(api_globals.game_as_class.you):
                     you = simple_player
@@ -34,7 +34,7 @@ def simplify_game_classes_with_evaluation():
             you
         )
     else:
-        if api_globals.game_as_class.players[str(api_globals.game_as_class.you)]['active']:
+        if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
             print("TODO('Implementing nn_reward")
         else:
             print("TODO('Implement nn_punishment')")
@@ -52,7 +52,7 @@ def simplify_game_classes_without_evaluation():
         simple_player = simple_player_mapping(player[1])
         if player[0] == str(api_globals.game_as_class.you):
             you = simple_player
-        elif player[1]["active"]:
+        elif player[1].active:
             players[player[0]] = simple_player
     nn_globals.simplified_game_class = SimpleGame(
         api_globals.game_as_class.width,
@@ -66,17 +66,17 @@ def simplify_game_classes_without_evaluation():
 # This function maps a Player on a SimplePlayer
 def simple_player_mapping(player: dict):
     direction: int
-    if player['direction'] == "up":
+    if player.direction == "up":
         direction = 0
-    elif player['direction'] == "right":
+    elif player.direction == "right":
         direction = 1
-    elif player['direction'] == "down":
+    elif player.direction == "down":
         direction = 2
     else:
         direction = 3
     return SimplePlayer(
-        player['x'],
-        player['y'],
+        player.x,
+        player.y,
         direction,
-        player['speed']
+        player.speed
     )
