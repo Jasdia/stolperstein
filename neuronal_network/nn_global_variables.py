@@ -7,6 +7,7 @@ simplified_game_class: SimpleGame
 dead_players: list
 
 
+# this function must be called in main.py
 def init():
     global simplified_game_class
     simplified_game_class = None
