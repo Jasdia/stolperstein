@@ -17,6 +17,7 @@ from api.action_play import *
 from globale_functions.move_calculations import next_move_survival
 from data_classes import Player
 from neuronal_network import nn_global_variables
+from neuronal_network.preparations import simplify_game_classes_with_evaluation, simplify_game_classes_without_evaluation
 
 # Initialize all global-containers
 nn_global_variables.init()
@@ -30,7 +31,8 @@ with open("./json_testfiles/000.json", "r") as file:
     json_testfile = file.read()
 api_globals.game_as_class = map_json_to_dataclass(json_testfile)
 print(api_globals.game_as_class)
-simplify_game_classes()
+simplify_game_classes_with_evaluation()
+simplify_game_classes_without_evaluation()
 # output = next_move_survival(
 #    data_class,
 #    str(data_class.you),

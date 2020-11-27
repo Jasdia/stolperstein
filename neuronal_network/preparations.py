@@ -4,28 +4,13 @@ import neuronal_network.nn_global_variables as nn_globals
 import api.apifeedback_global_variables as api_globals
 
 
-def simplify_game_classes():
-    print(api_globals.game_as_class)
+def simplify_game_classes_with_evaluation():
     if api_globals.game_as_class.players[str(api_globals.game_as_class.you)]['active']:
         players: {str: SimplePlayer} = {}
         you = None
         for player in api_globals.game_as_class.players.items():
             if player[1]["active"]:
-                direction: int
-                if player[1]['direction'] == "up":
-                    direction = 0
-                elif player[1]['direction'] == "right":
-                    direction = 1
-                elif player[1]['direction'] == "down":
-                    direction = 2
-                else:
-                    direction = 3
-                simple_player = SimplePlayer(
-                    player[1]['x'],
-                    player[1]['y'],
-                    direction,
-                    player[1]['speed']
-                )
+                simple_player = simple_player_mapping(player[1])
                 if player[0] == str(api_globals.game_as_class.you):
                     you = simple_player
                 else:
@@ -33,6 +18,7 @@ def simplify_game_classes():
             else:
                 if player[0] == api_globals.game_as_class.you:
                     print("TODO('Implement nn_punishment')")
+                    return
                 else:
                     print("TODO('reaction')")
         nn_globals.simplified_game_class = SimpleGame(
@@ -44,4 +30,40 @@ def simplify_game_classes():
         )
     else:
         print("TODO('Implement nn_punishment')")
-    print(nn_globals.simplified_game_class)
+        return
+
+
+def simplify_game_classes_without_evaluation():
+    players: {str: SimplePlayer} = {}
+    you = None
+    for player in api_globals.game_as_class.players.items():
+        simple_player = simple_player_mapping(player[1])
+        if player[0] == str(api_globals.game_as_class.you):
+            you = simple_player
+        elif player[1]["active"]:
+            players[player[0]] = simple_player
+    nn_globals.simplified_game_class = SimpleGame(
+        api_globals.game_as_class.width,
+        api_globals.game_as_class.height,
+        api_globals.game_as_class.cells,
+        players,
+        you
+    )
+
+
+def simple_player_mapping(player: dict):
+    direction: int
+    if player['direction'] == "up":
+        direction = 0
+    elif player['direction'] == "right":
+        direction = 1
+    elif player['direction'] == "down":
+        direction = 2
+    else:
+        direction = 3
+    return SimplePlayer(
+        player['x'],
+        player['y'],
+        direction,
+        player['speed']
+    )
