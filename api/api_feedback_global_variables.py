@@ -1,3 +1,6 @@
+# please import this container as followed:
+# import api.api_feedback_global_variables as api_globals
+
 from data_classes.Game import Game
 
 action_changed: bool
@@ -6,6 +9,7 @@ amount_of_moves: int
 game_as_class: Game
 
 
+# this function must be called in main.py
 def init():
     global action_changed
     action_changed = 'true'

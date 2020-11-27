@@ -1,4 +1,4 @@
-import api.apifeedback_global_variables as api_globals
+import api.api_feedback_global_variables as api_globals
 from math import fmod
 
 
