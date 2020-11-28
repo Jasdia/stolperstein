@@ -5,6 +5,7 @@ import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 
 
+# Simplifies the data and maps Game on ManuelCalculatedGames
 def simplify_game_classes():
     players: [ManuelCalculatedPlayer] = [simple_player_mapping(api_globals.game_as_class.players[str(api_globals.game_as_class.you)], api_globals.game_as_class.you)]
     for player in api_globals.game_as_class.players.items():

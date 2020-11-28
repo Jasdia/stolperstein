@@ -1,5 +1,3 @@
-# created with: https://app.quicktype.io/
-
 from dataclasses import dataclass
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 

@@ -3,40 +3,69 @@ import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
+# Contains the field with the moves of the players
+# Third dimension is designed for keeping all fields and rollback to the last player
 test_filed: [[[int]]]
+
+# Contains the list of the active players (with simplified data).
+# The first Player in the list are we.
 test_players: [ManuelCalculatedPlayer]
 
 
+# This function is called from outside to start all functions in this file.
+# It maps the players and the field on our locale variables.
+# Every pre-blocked field is set to 10.
+# At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation():
     global test_filed
     global test_players
     test_players = mc_globals.simplified_game_class.players
     test_filed = [mc_globals.simplified_game_class.cells for i in range(len(test_players))]
+
+    test_all_options(0, 0, 0)
+
+    # This print is just for testing-purpose
+    print(len(test_players))
     print("Action, death_count, kill_count:")
     for output in mc_globals.result.items():
         print(output[0], ", ", output[1][0], ", ", output[1][1])
-    test_all_options(0, 0, 0)
 
 
+# Calculates a move of one player. The position is needed to get the right filed.
+# It sets the track of the move (as id on the field) and returns True or False whether the player survives.
 def set_move(player: ManuelCalculatedPlayer, position):
     global test_filed
     global test_players
+
+    # Checks speed for the given limits
+    if 1 > player.speed > 10:
+        return False
+
+    # Iterates every move of the player (cell by cell)
     for n in range(1, player.speed):
+        # Checks if the player assigns the cell (because of the gap in the 6. move)
         if api_globals.amount_of_moves != 6 or n == 1 or n == player.speed:
             x_location = player.x + player.direction[0] * n
             y_location = player.y + player.direction[1] * n
-            if 0 < x_location < mc_globals.simplified_game_class.width and 0 < y_location < mc_globals.simplified_game_class.height:
+            # Checks whether the player leaves the field
+            if 0 < x_location < mc_globals.simplified_game_class.width and \
+                    0 < y_location < mc_globals.simplified_game_class.height:
                 return False
+            # Checks whether the cell is blocked by some track from the game before
             elif test_filed[position][x_location][y_location] == 10:
                 return False
+            # Checks whether the cell is blocked by some player in this game
             elif test_filed[position][x_location][y_location] > 0:
+                # Identifies player and kills him too.
                 for other in test_players:
                     if other.number == test_filed[position][x_location][y_location]:
                         other.surviving = False
                 test_filed[position][x_location][y_location] = 10
                 return False
+            # If the move is all right,sets the id on the cell
             else:
                 test_filed[position][x_location][y_location] += player.number
+    # Returns True if the player survives the action
     return True
 
 
@@ -80,6 +109,8 @@ def test_all_options(position, death_count, killed_count):
         return death_count, killed_count
 
 
+# Translates the action (str) to the parameters of the player (sets new speed or changes direction with the x, y tuple).
+# This function doesn't change any value of the player directly, but returns the parameters.
 def interpret_move(x, y, speed, action):
     x_plus_y = x + y
     if action == "turn_left":
