@@ -69,21 +69,32 @@ def set_move(player: ManuelCalculatedPlayer, position):
     return True
 
 
+# Recursive function for testing all possible moves of all players (every single combination).
+# Sets the result to mc_globals.result.
+# The position ist for detecting the current player in the field and player-list.
+# death_count counts how often we die at a specific action (in every single combination).
+# killed_count counts how often other player die by a single action of us.
 def test_all_options(position, death_count, killed_count):
     global test_filed
     global test_players
+    # End-Statement if there is no player left at the position.
     if position == len(mc_globals.simplified_game_class.players):
         return death_count, killed_count
     else:
+        # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.result.keys():
+            # If we re-reach the first player, his field will be reset and all players are reset.
             if position == 0:
                 test_filed[position] = mc_globals.simplified_game_class.cells
                 test_players = mc_globals.simplified_game_class.players
+            # At every other player, the player and every following will be reset and the players field is set to the
+            # field of the player before.
             else:
                 test_filed[position] = test_filed[position - 1]
                 for i in range(position, len(test_players)):
                     test_players[i] = mc_globals.simplified_game_class.players[i]
 
+            # Interprets the action by calling the function and changes the values of the player to the new action.
             test_players[position].direction, test_players[position].speed = \
                 interpret_move(
                     test_players[position].direction[0],
@@ -92,13 +103,18 @@ def test_all_options(position, death_count, killed_count):
                     move
                 )
 
+            # Calls the set_move-function to set the new action and checking whether the player survives.
             test_players[position].surviving = set_move(test_players[position], position)
 
+            # Function calls itself (recursion)
             death_count, killed_count = test_all_options(position + 1, death_count, killed_count)
 
+            # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
+            # values.
             if position == 0:
                 mc_globals.result[move] = [death_count, killed_count]
                 death_count, killed_count = 0, 0
+            # Evaluates the combination if the last player is reached.
             elif position == len(mc_globals.simplified_game_class.players) - 1:
                 for player in test_players:
                     if not player.surviving:
@@ -106,6 +122,7 @@ def test_all_options(position, death_count, killed_count):
                             death_count += 1
                         else:
                             killed_count += 1
+        # returns the current death_count and killed_count values.
         return death_count, killed_count
 
 
