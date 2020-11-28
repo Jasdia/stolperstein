@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from data_classes.Game import Game
 from data_classes.Player import Player
 
@@ -22,5 +23,5 @@ def map_json_to_dataclass(json_string):
         players,
         json_dict['you'],
         json_dict['running'],
-        json_dict['deadline']
+        datetime.strptime(json_dict['deadline'], '%Y-%m-%dT%H:%M:%SZ')
     )

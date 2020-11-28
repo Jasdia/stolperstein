@@ -37,24 +37,24 @@ def set_move(player: ManuelCalculatedPlayer, position):
     global test_filed
     global test_players
 
-    # Checks speed for the given limits
+    # Checks speed for the given limits.
     if 1 > player.speed > 10:
         return False
 
-    # Iterates every move of the player (cell by cell)
+    # Iterates every move of the player (cell by cell).
     for n in range(1, player.speed):
-        # Checks if the player assigns the cell (because of the gap in the 6. move)
+        # Checks if the player assigns the cell (because of the gap in the 6. move).
         if api_globals.amount_of_moves != 6 or n == 1 or n == player.speed:
             x_location = player.x + player.direction[0] * n
             y_location = player.y + player.direction[1] * n
-            # Checks whether the player leaves the field
+            # Checks whether the player leaves the field.
             if 0 < x_location < mc_globals.simplified_game_class.width and \
                     0 < y_location < mc_globals.simplified_game_class.height:
                 return False
-            # Checks whether the cell is blocked by some track from the game before
+            # Checks whether the cell is blocked by some track from the game before.
             elif test_filed[position][x_location][y_location] == 10:
                 return False
-            # Checks whether the cell is blocked by some player in this game
+            # Checks whether the cell is blocked by some player in this game.
             elif test_filed[position][x_location][y_location] > 0:
                 # Identifies player and kills him too.
                 for other in test_players:
@@ -62,10 +62,10 @@ def set_move(player: ManuelCalculatedPlayer, position):
                         other.surviving = False
                 test_filed[position][x_location][y_location] = 10
                 return False
-            # If the move is all right,sets the id on the cell
+            # If the move is all right,sets the id on the cell.
             else:
                 test_filed[position][x_location][y_location] += player.number
-    # Returns True if the player survives the action
+    # Returns True if the player survives the action.
     return True
 
 
