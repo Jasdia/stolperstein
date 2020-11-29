@@ -25,7 +25,6 @@ def start_calculation():
     test_all_options(0, 0, 0)
 
     # This print is just for testing-purpose
-    print(len(test_players))
     print("Action, death_count, kill_count:")
     for output in mc_globals.result.items():
         print(output[0], ", ", output[1][0], ", ", output[1][1])
@@ -38,7 +37,7 @@ def set_move(player: ManuelCalculatedPlayer, position):
     global test_players
 
     # Checks speed for the given limits.
-    if 1 > player.speed > 10:
+    if player.speed < 1 or player.speed > 10:
         return False
 
     # Iterates every move of the player (cell by cell).
@@ -48,8 +47,7 @@ def set_move(player: ManuelCalculatedPlayer, position):
             x_location = player.x + player.direction[0] * n
             y_location = player.y + player.direction[1] * n
             # Checks whether the player leaves the field.
-            if 0 < x_location < mc_globals.simplified_game_class.width and \
-                    0 < y_location < mc_globals.simplified_game_class.height:
+            if 0 < x_location < mc_globals.simplified_game_class.width and 0 < y_location < mc_globals.simplified_game_class.height:
                 return False
             # Checks whether the cell is blocked by some track from the game before.
             elif test_filed[position][x_location][y_location] == 10:
@@ -60,6 +58,7 @@ def set_move(player: ManuelCalculatedPlayer, position):
                 for other in test_players:
                     if other.number == test_filed[position][x_location][y_location]:
                         other.surviving = False
+                # Sets the field on 10, because both players are dead.
                 test_filed[position][x_location][y_location] = 10
                 return False
             # If the move is all right,sets the id on the cell.
@@ -95,13 +94,12 @@ def test_all_options(position, death_count, killed_count):
                     test_players[i] = mc_globals.simplified_game_class.players[i]
 
             # Interprets the action by calling the function and changes the values of the player to the new action.
-            test_players[position].direction, test_players[position].speed = \
-                interpret_move(
-                    test_players[position].direction[0],
-                    test_players[position].direction[1],
-                    test_players[position].speed,
-                    move
-                )
+            test_players[position].direction, test_players[position].speed = interpret_move(
+                test_players[position].direction[0],
+                test_players[position].direction[1],
+                test_players[position].speed,
+                move
+            )
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
             test_players[position].surviving = set_move(test_players[position], position)

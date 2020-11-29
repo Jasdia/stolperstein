@@ -29,16 +29,17 @@ api_feedback_global_variables.init()
 mc_globals.init()
 
 # Start contact to server
-get_event_loop().run_until_complete(start_ws())
-#get_server_time()
+# get_event_loop().run_until_complete(start_ws())
+# get_server_time()
+
 # ==================================================================
 # Just for Testing:
-#with open("./json_test_files/000.json", "r") as file:
-#    json_testfile = file.read()
-#api_globals.game_as_class = map_json_to_dataclass(json_testfile)
+with open("./json_test_files/001.json", "r") as file:
+    json_testfile = file.read()
+api_globals.game_as_class = map_json_to_dataclass(json_testfile)
 # print(api_globals.game_as_class)
-#simplify_game_classes()
-#start_calculation()
+simplify_game_classes()
+start_calculation()
 
 # simplify_game_classes_with_evaluation()
 # print("Qapla'!")

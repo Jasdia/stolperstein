@@ -9,7 +9,7 @@ import calculate_next_step.mc_global_variables as mc_globals
 def simplify_game_classes():
     players: [ManuelCalculatedPlayer] = [simple_player_mapping(api_globals.game_as_class.players[str(api_globals.game_as_class.you)], api_globals.game_as_class.you)]
     for player in api_globals.game_as_class.players.items():
-        simple_player = simple_player_mapping(player[1], player[0])
+        simple_player = simple_player_mapping(player[1], int(player[0]))
         if player[0] != str(api_globals.game_as_class.you) and player[1].active:
             players.append(simple_player)
 
