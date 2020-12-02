@@ -29,6 +29,16 @@ def start_calculation():
     for output in mc_globals.result.items():
         print(output[0], ", ", output[1][0], ", ", output[1][1])
 
+    # Calculate percentage of deaths.
+    for move in mc_globals.result:
+        if mc_globals.result[move][0] > 0:
+            mc_globals.result[move][0] = (len(mc_globals.result)**(len(test_players)-1))/mc_globals.result[move][0]
+
+    # This print is just for testing-purpose
+    print("Action, death_count, kill_count:")
+    for output in mc_globals.result.items():
+        print(output[0], ", ", output[1][0], ", ", output[1][1])
+
 
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
