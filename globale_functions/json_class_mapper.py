@@ -1,9 +1,9 @@
 import json
-from datetime import datetime
 from data_classes.Game import Game
 from data_classes.Player import Player
 
 
+# Maps the incoming json to the Game-class and returns the object.
 def map_json_to_dataclass(json_string):
     json_dict = json.loads(json_string)
     players: {str: Player} = {}
@@ -16,12 +16,5 @@ def map_json_to_dataclass(json_string):
             player[1]['active']
         )
         players[player[0]] = new_player
-    return Game(
-        json_dict['width'],
-        json_dict['height'],
-        json_dict['cells'],
-        players,
-        json_dict['you'],
-        json_dict['running'],
-        datetime.strptime(json_dict['deadline'], '%Y-%m-%dT%H:%M:%SZ')
-    )
+    json_dict['players'] = players
+    return Game(**json_dict)
