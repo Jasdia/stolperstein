@@ -8,7 +8,7 @@ dead_players: list
 
 
 # this function must be called in main.py
-def init():
+def _init():
     global simplified_game_class
     simplified_game_class = None
     global dead_players

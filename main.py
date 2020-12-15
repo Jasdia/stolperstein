@@ -10,23 +10,21 @@
 
 # ASCII-Art designed with: http://patorjk.com/software/taag/
 
-from asyncio import get_event_loop
-import calculate_next_step.mc_global_variables as mc_globals
-from api import api_feedback_global_variables
+
+# Other modules from this project
+# functions:
 from api.action_play import *
-from globale_functions.move_calculations import next_move_survival
-from data_classes import Player
-from api.time_server import get_server_time
-from neuronal_network import nn_global_variables
-from neuronal_network.preparations import simplify_game_classes_with_evaluation, simplify_game_classes_without_evaluation
 from calculate_next_step.class_mapping import simplify_game_classes
 from calculate_next_step.calculation import start_calculation
-from datetime import datetime
+# global variables (see conventions in *_global_variables.py):
+import calculate_next_step.mc_global_variables as mc_globals
+import api.api_feedback_global_variables as api_globals
+import neuronal_network.nn_global_variables as nn_globals
 
 # Initialize all global-containers
-nn_global_variables.init()
-api_feedback_global_variables.init()
-mc_globals.init()
+nn_globals._init()
+api_globals._init()
+mc_globals._init()
 
 # Start contact to server
 # get_event_loop().run_until_complete(start_ws())
