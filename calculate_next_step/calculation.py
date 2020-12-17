@@ -8,27 +8,12 @@ from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
 
-# TODO("Remove")
-# Contains the field with the moves of the players
-# Third dimension is designed for keeping all fields and rollback to the last player
-#test_filed: [[[int]]]
-
-# TODO("Remove")
-# Contains the list of the active players (with simplified data).
-# The first Player in the list are we.
-#test_players: [ManuelCalculatedPlayer]
-
 
 # This function is called from outside to start all functions in this file.
 # It maps the players and the field on our locale variables.
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation():
-    #global test_filed
-    #global test_players
-    #test_players = mc_globals.simplified_game_class.players
-    #test_filed = [mc_globals.simplified_game_class.cells for i in range(len(test_players))]
-
     test_all_options(0, 0, 0, mc_globals.simplified_game_class.cells, mc_globals.simplified_game_class.players, mc_globals.test_depth)
 
     # This print is just for testing-purpose
@@ -50,9 +35,6 @@ def start_calculation():
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
 def set_move(player: ManuelCalculatedPlayer, field, players):
-    #global test_filed
-    #global test_players
-
     # Checks speed for the given limits.
     if player.speed < 1 or player.speed > 10:
         return False, field, players
@@ -91,8 +73,6 @@ def set_move(player: ManuelCalculatedPlayer, field, players):
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
 def test_all_options(position, death_count, killed_count, field, players, test_depth):
-    #global test_filed
-    #global test_players
     # End-Statement if there is no player left at the position.
     if position == len(players):
         if not test_depth == 0:
@@ -105,18 +85,6 @@ def test_all_options(position, death_count, killed_count, field, players, test_d
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.result.keys():
-            # TODO("Remove commented block!")
-            # If we re-reach the first player, his field will be reset and all players are reset.
-            #if position == 0:
-            #    test_filed[position] = mc_globals.simplified_game_class.cells
-            #    test_players = mc_globals.simplified_game_class.players
-            # At every other player, the player and every following will be reset and the players field is set to the
-            # field of the player before.
-            #else:
-            #    test_filed[position] = test_filed[position - 1]
-            #    for i in range(position, len(test_players)):
-            #        test_players[i] = mc_globals.simplified_game_class.players[i]
-
             # Interprets the action by calling the function and changes the values of the player to the new action.
             players[position].direction, players[position].speed = interpret_move(
                 players[position].direction[0],
