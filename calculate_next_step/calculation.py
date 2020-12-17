@@ -134,7 +134,7 @@ def test_all_options(position, death_count, killed_count, field, players, test_d
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
             if position == 0:
-                mc_globals.result[move] = [death_count, killed_count]
+                mc_globals.result[move] = [mc_globals.result[move][0] + death_count, mc_globals.result[move][1] + killed_count]
                 death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
             elif position == len(mc_globals.simplified_game_class.players) - 1:
