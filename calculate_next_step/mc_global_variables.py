@@ -18,13 +18,13 @@ test_depth: int
 def _init():
     global simplified_game_class
     simplified_game_class = None
-    global result
-    result = {
-        'turn_left': [0, 0],
-        'turn_right': [0, 0],
-        'slow_down': [0, 0],
-        'speed_up': [0, 0],
-        'change_nothing': [0, 0]
-    }
     global test_depth
     test_depth = 2
+    global result
+    tmp_move_list = ['turn_left', 'turn_right', 'slow_down', 'speed_up', 'change_nothing']
+    result = {}
+    for i in range(test_depth):
+        print(i)
+        for move in tmp_move_list:
+            print(move + "_" + str(i + 1))
+            result[move + "_" + str(i + 1)] = [0, 0]
