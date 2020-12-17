@@ -74,13 +74,15 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
 # killed_count counts how often other player die by a single action of us.
 def _test_all_options(position, death_count, killed_count, field, players, test_depth):
     # End-Statement if there is no player left at the position.
-    if position == len(players):
-        if not test_depth == 0:
-            new_players = []
-            for idx, player in enumerate(players):
-                if player.surviving or idx == 0:
-                    new_players.append(player)
-            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1)
+    # or if the calculation-depth is reached
+    if position == len(players) or test_depth == 0:
+        return death_count, killed_count
+    elif position == len(players):
+        new_players = []
+        for idx, player in enumerate(players):
+            if player.surviving or idx == 0:
+                new_players.append(player)
+        death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1)
         return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
