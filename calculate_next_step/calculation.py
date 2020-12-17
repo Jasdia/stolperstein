@@ -14,7 +14,7 @@ import api.api_feedback_global_variables as api_globals
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation():
-    test_all_options(0, 0, 0, mc_globals.simplified_game_class.cells, mc_globals.simplified_game_class.players, mc_globals.test_depth)
+    _test_all_options(0, 0, 0, mc_globals.simplified_game_class.cells, mc_globals.simplified_game_class.players, mc_globals.test_depth)
 
     # This print is just for testing-purpose
     print("Action, death_count, kill_count:")
@@ -34,7 +34,7 @@ def start_calculation():
 
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
-def set_move(player: ManuelCalculatedPlayer, field, players):
+def _set_move(player: ManuelCalculatedPlayer, field, players):
     # Checks speed for the given limits.
     if player.speed < 1 or player.speed > 10:
         return False, field, players
@@ -72,7 +72,7 @@ def set_move(player: ManuelCalculatedPlayer, field, players):
 # The position ist for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
-def test_all_options(position, death_count, killed_count, field, players, test_depth):
+def _test_all_options(position, death_count, killed_count, field, players, test_depth):
     # End-Statement if there is no player left at the position.
     if position == len(players):
         if not test_depth == 0:
@@ -80,13 +80,13 @@ def test_all_options(position, death_count, killed_count, field, players, test_d
             for idx, player in enumerate(players):
                 if player.surviving or idx == 0:
                     new_players.append(player)
-            death_count, killed_count = test_all_options(0, death_count, killed_count, field, new_players, test_depth-1)
+            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1)
         return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.result.keys():
             # Interprets the action by calling the function and changes the values of the player to the new action.
-            players[position].direction, players[position].speed = interpret_move(
+            players[position].direction, players[position].speed = _interpret_move(
                 players[position].direction[0],
                 players[position].direction[1],
                 players[position].speed,
@@ -94,10 +94,10 @@ def test_all_options(position, death_count, killed_count, field, players, test_d
             )
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
-            players[position].surviving, field, players = set_move(players[position], field, players)
+            players[position].surviving, field, players = _set_move(players[position], field, players)
 
             # Function calls itself (recursion)
-            death_count, killed_count = test_all_options(position + 1, death_count, killed_count, field, players, test_depth)
+            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
@@ -118,7 +118,7 @@ def test_all_options(position, death_count, killed_count, field, players, test_d
 
 # Translates the action (str) to the parameters of the player (sets new speed or changes direction with the x, y tuple).
 # This function doesn't change any value of the player directly, but returns the parameters.
-def interpret_move(x, y, speed, action):
+def _interpret_move(x, y, speed, action):
     x_plus_y = x + y
     if action == "turn_left":
         x = fmod((x + x_plus_y), 2)
