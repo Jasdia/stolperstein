@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
 
 @dataclass

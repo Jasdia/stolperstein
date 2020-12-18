@@ -1,7 +1,7 @@
 # please import this container as followed:
 # import api.api_feedback_global_variables as api_globals
 
-from data_classes.Game import Game
+from data_classes.api.Game import Game
 
 action_changed: bool
 action: str

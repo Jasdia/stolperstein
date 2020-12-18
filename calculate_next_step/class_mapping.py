@@ -1,6 +1,6 @@
-from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
-from data_classes.ManualCalculatedGame import ManualCalculatedGame
-from data_classes.Player import Player
+from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.manual_calculation.ManualCalculatedGame import ManualCalculatedGame
+from data_classes.api.Player import Player
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 

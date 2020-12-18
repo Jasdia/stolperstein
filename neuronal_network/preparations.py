@@ -1,5 +1,5 @@
-from data_classes.SimplePlayer import SimplePlayer
-from data_classes.SimpleGame import SimpleGame
+from data_classes.neural_network.SimplePlayer import SimplePlayer
+from data_classes.neural_network.SimpleGame import SimpleGame
 import neuronal_network.nn_global_variables as nn_globals
 import api.api_feedback_global_variables as api_globals
 

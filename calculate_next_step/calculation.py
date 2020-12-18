@@ -3,7 +3,7 @@ from math import fmod
 
 # Other modules from this project
 # classes:
-from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals

@@ -7,7 +7,7 @@ import json
 
 # Other modules from this project
 # classes:
-from data_classes.ManualCalculatedGame import ManualCalculatedGame
+from data_classes.manual_calculation.ManualCalculatedGame import ManualCalculatedGame
 
 # contains prepared data of the game
 simplified_game_class: ManualCalculatedGame

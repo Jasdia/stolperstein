@@ -1,6 +1,6 @@
 import json
-from data_classes.Game import Game
-from data_classes.Player import Player
+from data_classes.api.Game import Game
+from data_classes.api.Player import Player
 
 
 # Maps the incoming json to the Game-class and returns the object.
