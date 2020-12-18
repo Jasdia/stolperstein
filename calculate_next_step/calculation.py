@@ -16,16 +16,20 @@ import api.api_feedback_global_variables as api_globals
 def start_calculation():
     _test_all_options(0, 0, 0, mc_globals.simplified_game_class.cells, mc_globals.simplified_game_class.players, mc_globals.test_depth)
 
+    # TODO("Remove after testing")
     # This print is just for testing-purpose
-    print("Action, death_count, kill_count:")
-    for output in mc_globals.result.items():
-        print(output[0], ", ", output[1][0], ", ", output[1][1])
+    # print("Action, death_count, kill_count:")
+    # for output in mc_globals.result.items():
+    #    print(output[0], ", ", output[1][0], ", ", output[1][1])
 
+    # TODO("Remove")
     # Calculate percentage of deaths.
-    for move in mc_globals.result:
-        if mc_globals.result[move][0] > 0:
-            mc_globals.result[move][0] = (len(mc_globals.result)**(len(mc_globals.simplified_game_class.players)-1))/mc_globals.result[move][0]
+    # for move in mc_globals.result:
+    #    if mc_globals.result[move][0] > 0:
+    #        mc_globals.result[move][0] = (len(mc_globals.result)**(len(mc_globals.simplified_game_class.players)-1))/
+    #        mc_globals.result[move][0]
 
+    # TODO("Remove after testing")
     # This print is just for testing-purpose
     print("Action, death_count, kill_count:")
     for output in mc_globals.result.items():
@@ -67,6 +71,8 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
     return True, field, players
 
 
+# TODO("Check if it really works!")
+# TODO("Check if comments are still right")
 # Recursive function for testing all possible moves of all players (every single combination).
 # Sets the result to mc_globals.result.
 # The position ist for detecting the current player in the field and player-list.
@@ -75,18 +81,17 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
 def _test_all_options(position, death_count, killed_count, field, players, test_depth):
     # End-Statement if there is no player left at the position.
     # or if the calculation-depth is reached
-    if position == len(players) or test_depth == 0:
-        return death_count, killed_count
-    elif position == len(players):
-        new_players = []
-        for idx, player in enumerate(players):
-            if player.surviving or idx == 0:
-                new_players.append(player)
-        death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1)
+    if position == len(players):
+        if test_depth == 0:
+            new_players = []
+            for idx, player in enumerate(players):
+                if player.surviving or idx == 0:
+                    new_players.append(player)
+            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1)
         return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
-        for move in mc_globals.result.keys():
+        for move in mc_globals.move_list:
             # Interprets the action by calling the function and changes the values of the player to the new action.
             players[position].direction, players[position].speed = _interpret_move(
                 players[position].direction[0],
@@ -104,7 +109,9 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
             if position == 0:
-                mc_globals.result[move] = [mc_globals.result[move][0] + death_count, mc_globals.result[move][1] + killed_count]
+                # TODO("get result as a locale variable for calling this function async many times and get death_count
+                #  as percentage")
+                mc_globals.result[move + "_" + str(test_depth)] = [mc_globals.result[move + "_" + str(test_depth)][0] + death_count, mc_globals.result[move + "_" + str(test_depth)][1] + killed_count]
                 death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
             elif position == len(mc_globals.simplified_game_class.players) - 1:
