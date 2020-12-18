@@ -53,7 +53,7 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
             x_location = player.x + player.direction[0] * n
             y_location = player.y + player.direction[1] * n
             # Checks whether the player leaves the field.
-            if 0 < x_location < mc_globals.simplified_game_class.width and 0 < y_location < mc_globals.simplified_game_class.height:
+            if 0 < x_location < api_globals.game_as_class.width and 0 < y_location < api_globals.game_as_class.height:
                 return False, field, players
             # Checks whether the cell is blocked by some track from the game before.
             elif field[x_location][y_location] == 10:
@@ -117,10 +117,10 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
                 mc_globals.result[move + "_" + str(test_depth)] = [mc_globals.result[move + "_" + str(test_depth)][0] + death_count, mc_globals.result[move + "_" + str(test_depth)][1] + killed_count]
                 death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
-            elif position == len(mc_globals.simplified_game_class.players) - 1:
-                for player in players:
+            elif position == len(players) - 1:
+                for idx, player in enumerate(players):
                     if not player.surviving:
-                        if player.player_id == mc_globals.simplified_game_class.you:
+                        if idx == 0:
                             death_count += 1
                         else:
                             killed_count += 1
