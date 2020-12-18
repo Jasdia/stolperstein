@@ -14,7 +14,7 @@
 # Other modules from this project
 # functions:
 from api.action_play import *
-from calculate_next_step.class_mapping import simplify_game_classes
+from calculate_next_step.class_mapping import simplify_game_data
 from calculate_next_step.calculation import start_calculation
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
@@ -32,12 +32,11 @@ mc_globals._init()
 
 # ==================================================================
 # Just for Testing:
-with open("./json_test_files/000.json", "r") as file:
-    json_testfile = file.read()
+json_testfile = open("./json_test_files/000.json", "r").read()
 api_globals.game_as_class = map_json_to_dataclass(json_testfile)
 print(api_globals.game_as_class)
-simplify_game_classes()
-start_calculation()
+simplify_game_data()
+start_calculation(1)
 
 # simplify_game_classes_with_evaluation()
 # print("Qapla'!")

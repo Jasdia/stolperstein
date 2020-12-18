@@ -8,4 +8,4 @@ class ManuelCalculatedPlayer:
     direction: (int, int)
     speed: int
     surviving: bool
-    number: int
+    player_id: int

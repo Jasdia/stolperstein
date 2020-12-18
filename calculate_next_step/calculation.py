@@ -7,14 +7,17 @@ from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalcula
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
+# functions:
+from calculate_next_step.class_mapping import simplify_game_data
 
 
 # This function is called from outside to start all functions in this file.
 # It maps the players and the field on our locale variables.
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
-def start_calculation():
-    _test_all_options(0, 0, 0, mc_globals.simplified_game_class.cells, mc_globals.simplified_game_class.players, mc_globals.test_depth)
+def start_calculation(test_depth):
+    game_field, player_list = simplify_game_data()
+    _test_all_options(0, 0, 0, game_field, player_list, test_depth)
 
     # TODO("Remove after testing")
     # This print is just for testing-purpose
@@ -59,14 +62,14 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
             elif field[x_location][y_location] > 0:
                 # Identifies player and kills him too.
                 for idx, other in players:
-                    if other.number == field[x_location][y_location]:
+                    if other.player_id == field[x_location][y_location]:
                         players[idx].surviving = False
                 # Sets the field on 10, because both players are dead.
                 field[x_location][y_location] = 10
                 return False, field, players
             # If the move is all right,sets the id on the cell.
             else:
-                field[x_location][y_location] += player.number
+                field[x_location][y_location] += player.player_id
     # Returns True if the player survives the action.
     return True, field, players
 
@@ -117,7 +120,7 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             elif position == len(mc_globals.simplified_game_class.players) - 1:
                 for player in players:
                     if not player.surviving:
-                        if player.number == mc_globals.simplified_game_class.you:
+                        if player.player_id == mc_globals.simplified_game_class.you:
                             death_count += 1
                         else:
                             killed_count += 1
