@@ -14,7 +14,7 @@
 # Other modules from this project
 # functions:
 from api.action_play import *
-from calculate_next_step.class_mapping import simplify_game_data
+from calculate_next_step.data_simplification import simplify_game_data
 from calculate_next_step.calculation import start_calculation
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals

@@ -11,7 +11,7 @@ def simplify_game_data():
     player_list = []
     for player in api_globals.game_as_class.players.items():
         if player[1].active:
-            simple_player = simple_player_mapping(player[1], int(player[0]))
+            simple_player = _simple_player_mapping(player[1], int(player[0]))
             if not player[0] == str(api_globals.game_as_class.you):
                 player_list.append(simple_player)
             else:
@@ -29,7 +29,7 @@ def simplify_game_data():
 
 
 # This function maps a Player on a SimplePlayer
-def simple_player_mapping(player: Player, player_id: int):
+def _simple_player_mapping(player: Player, player_id: int):
     direction: (int, int)
     if player.direction == "up":
         direction = (0, 1)

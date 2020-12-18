@@ -8,7 +8,7 @@ from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalcula
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
 # functions:
-from calculate_next_step.class_mapping import simplify_game_data
+from calculate_next_step.data_simplification import simplify_game_data
 
 
 # This function is called from outside to start all functions in this file.
