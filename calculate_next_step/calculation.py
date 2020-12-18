@@ -21,19 +21,6 @@ def start_calculation(test_depth):
 
     # TODO("Remove after testing")
     # This print is just for testing-purpose
-    # print("Action, death_count, kill_count:")
-    # for output in mc_globals.result.items():
-    #    print(output[0], ", ", output[1][0], ", ", output[1][1])
-
-    # TODO("Remove")
-    # Calculate percentage of deaths.
-    # for move in mc_globals.result:
-    #    if mc_globals.result[move][0] > 0:
-    #        mc_globals.result[move][0] = (len(mc_globals.result)**(len(mc_globals.simplified_game_class.players)-1))/
-    #        mc_globals.result[move][0]
-
-    # TODO("Remove after testing")
-    # This print is just for testing-purpose
     print("Action, death_count, kill_count:")
     for output in mc_globals.result.items():
         print(output[0], ", ", output[1][0], ", ", output[1][1])
