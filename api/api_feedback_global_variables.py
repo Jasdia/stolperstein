@@ -10,6 +10,14 @@ from data_classes.api.Game import Game
 action_changed: bool
 # The next action that will be performed by the bot.
 action: str
+
+
+# Resetting action after sending to server.
+def reset_action():
+    global action
+    action = 'change_nothing'
+
+
 # Checks how many moves where performed. Must be updated in action_play.py so that we know if we reached the 6th step
 # (for the extra rule).
 amount_of_moves: int
@@ -23,8 +31,7 @@ def _init():
     global action_changed
     action_changed = False
     # Sets the default-value to 'change_nothing' in case the function is too slow.
-    global action
-    action = 'change_nothing'
+    reset_action()
     # Sets the value to zero, because no move is done yet.
     # TODO("Is 0 correct or should it be -1?")
     global amount_of_moves

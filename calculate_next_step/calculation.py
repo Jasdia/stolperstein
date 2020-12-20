@@ -19,11 +19,21 @@ def start_calculation(test_depth):
     game_field, player_list = simplify_game_data()
     _test_all_options(0, 0, 0, game_field, player_list, test_depth, test_depth, "")
 
+    next_action = mc_globals.move_list[0]
+    for move in mc_globals.move_list:
+        if mc_globals.result[move][0] < mc_globals.result[next_action][0]:
+            next_action = move
+        elif mc_globals.result[move][0] == mc_globals.result[next_action][0] and \
+                mc_globals.result[move][1] > mc_globals.result[next_action][1]:
+            next_action = move
+
+    api_globals.action = next_action
+    # print(next_action)
     # TODO("Remove after testing")
     # This print is just for testing-purpose
-    print("Action, death_count, kill_count:")
-    for output in mc_globals.result.items():
-        print(output[0], ", ", output[1][0], ", ", output[1][1])
+    # print("Action, death_count, kill_count:")
+    # for output in mc_globals.result.items():
+    #      print(output[0], ", ", output[1][0], ", ", output[1][1])
 
 
 # Calculates a move of one player. The position is needed to get the right filed.

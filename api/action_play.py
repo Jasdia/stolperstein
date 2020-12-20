@@ -1,6 +1,8 @@
 # Python-libraries
 import os
 import time
+import asyncio
+from _thread import start_new_thread
 from websockets import connect
 from datetime import datetime
 
@@ -8,6 +10,7 @@ from datetime import datetime
 # functions:
 from api.json_answer import generated_json
 from global_functions.json_class_mapper import map_json_to_dataclass
+from calculate_next_step.calculation import start_calculation
 # global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
 
@@ -30,21 +33,26 @@ async def start_ws():
             if not api_globals.game_as_class.running:
                 return
 
-            # Example of sending an answer for the server. TODO("Proper implementation")
-            if api_globals.action_changed == 'true':
-                await websocket.send(generated_json(f'{api_globals.action}'))
-            else:
-                await websocket.send(generated_json(f'{api_globals.action}'))
+            start_new_thread(start_calculation, (1, ))
 
-            # TODO("Sleep-time must be less than deadline (find right time for answering)")
-            # TODO("Implement answering after sleeping!")
             # Set sleep-time before answering.
-            sleep_time = (api_globals.game_as_class.deadline-datetime.utcnow()).total_seconds()
+            sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
+            # One second for answering.
+            sleep_time -= 1
 
             # Just waits if the deadline is in the future.
             # It could - for example - be the case, that the server sends an old json-file.
             if sleep_time > 0:
                 time.sleep(sleep_time)
+
+            # Example of sending an answer for the server. TODO("Proper implementation")
+            await websocket.send(generated_json(f'{api_globals.action}'))
+
+            # TODO("Sleep-time must be less than deadline (find right time for answering)")
+            # TODO("Implement answering after sleeping!")
+
+
+
 
             # TODO("What's about error-handling?")
 
