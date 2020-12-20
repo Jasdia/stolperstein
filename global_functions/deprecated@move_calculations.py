@@ -1,8 +1,13 @@
-# TODO("Check if deprecated?")
-import api.api_feedback_global_variables as api_globals
+# Python-libraries
 from math import fmod
+from deprecated import deprecated
+
+# Other modules from this project
+# global variables (see conventions in *_global_variables.py):
+import api.api_feedback_global_variables as api_globals
 
 
+@deprecated(reason="Not used in the hole project.")
 def next_move_survival(
         data_class,
         player_id,
@@ -20,6 +25,7 @@ def next_move_survival(
     )
 
 
+@deprecated(reason="Not used in the hole project.")
 def _next_move_survival_calculation(
         x_position,
         y_position,

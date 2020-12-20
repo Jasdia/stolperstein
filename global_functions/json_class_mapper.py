@@ -1,4 +1,7 @@
+# Python-libraries
 import json
+# Other modules from this project
+# classes:
 from data_classes.api.Game import Game
 from data_classes.api.Player import Player
 
