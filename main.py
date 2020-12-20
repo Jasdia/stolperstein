@@ -19,6 +19,7 @@ from asyncio import get_event_loop
 from api.action_play import start_ws
 from calculate_next_step.calculation import start_calculation
 from global_functions.json_class_mapper import map_json_to_dataclass
+from gui.game_frame import create_grid
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
@@ -36,4 +37,5 @@ mc_globals._init()
 # Just for Testing:
 json_testfile = open("./json_test_files/000.json", "r").read()
 api_globals.game_as_class = map_json_to_dataclass(json_testfile)
-start_calculation(1)
+create_grid(api_globals.game_as_class.cells, api_globals.game_as_class.players)
+# start_calculation(1)
