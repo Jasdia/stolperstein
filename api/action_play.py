@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Other modules from this project
 # functions:
-from api.json_answer import calculated_json, generated_json
+from api.json_answer import generated_json
 from globale_functions.json_class_mapper import map_json_to_dataclass
 # global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
@@ -34,7 +34,7 @@ async def start_ws():
             if api_globals.action_changed == 'true':
                 await websocket.send(generated_json(f'{api_globals.action}'))
             else:
-                await websocket.send(calculated_json(f'{api_globals.action}'))
+                await websocket.send(generated_json(f'{api_globals.action}'))
 
             # TODO("Sleep-time must be less than deadline (find right time for answering)")
             # TODO("Implement answering after sleeping!")
