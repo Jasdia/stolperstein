@@ -19,7 +19,7 @@ from calculate_next_step.calculation import start_calculation
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
-import neuronal_network.nn_global_variables as nn_globals
+import neural_network.nn_global_variables as nn_globals
 
 # Initialize all global-containers
 nn_globals._init()

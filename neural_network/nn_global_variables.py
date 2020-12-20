@@ -1,5 +1,5 @@
 # please import this container as followed:
-# import neuronal_network.nn_global_variables as nn_globals
+# import neural_network.nn_global_variables as nn_globals
 
 from data_classes.neural_network.SimpleGame import SimpleGame
 

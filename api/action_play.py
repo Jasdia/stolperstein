@@ -7,7 +7,7 @@ from datetime import datetime
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
-from globale_functions.json_class_mapper import map_json_to_dataclass
+from global_functions.json_class_mapper import map_json_to_dataclass
 # global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
 
