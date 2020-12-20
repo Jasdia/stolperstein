@@ -12,3 +12,5 @@ class Player:
     direction: str
     speed: int
     active: bool
+    # Is only sent in the last json from the server (if the game is over).
+    name: str = ""
