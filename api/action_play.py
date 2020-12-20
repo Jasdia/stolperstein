@@ -45,10 +45,7 @@ async def start_ws():
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
-            # Example of sending an answer for the server. TODO("Proper implementation")
+            # Example of sending an answer for the server.
             await websocket.send(generated_json(f'{api_globals.action}'))
-
-            # TODO("Sleep-time must be less than deadline (find right time for answering)")
-            # TODO("Implement answering after sleeping!")
 
             # TODO("What's about error-handling?")
