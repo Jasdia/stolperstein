@@ -28,12 +28,6 @@ def start_calculation(test_depth):
             next_action = move
 
     api_globals.action = next_action
-    # print(next_action)
-    # TODO("Remove after testing")
-    # This print is just for testing-purpose
-    # print("Action, death_count, kill_count:")
-    # for output in mc_globals.result.items():
-    #      print(output[0], ", ", output[1][0], ", ", output[1][1])
 
 
 # Calculates a move of one player. The position is needed to get the right filed.
@@ -117,9 +111,9 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
                 death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
             elif position == len(players) - 1:
-                for idx, player in enumerate(players):
+                for index, player in enumerate(players):
                     if not player.surviving:
-                        if idx == 0:
+                        if index == 0:
                             death_count += 1
                         else:
                             killed_count += 1
