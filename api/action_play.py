@@ -25,16 +25,15 @@ async def start_ws():
         while True:
             try:
                 play_map = await websocket.recv()
-                logging.debug("Server-answer: " + play_map)
-                print("Server-answer: " + play_map)
+                logging.info("Server-answer: " + play_map)
                 api_globals.game_as_class = map_json_to_dataclass(play_map)
-                logging.debug("Mapped on the class: " + str(api_globals.game_as_class))
-                print("Mapped on the class: " + str(api_globals.game_as_class))
+                logging.info("Mapped on the class: " + str(api_globals.game_as_class))
 
                 # Disconnect from server if game is over.
                 if not api_globals.game_as_class.running:
                     return
 
+                # TODO("Smarter implementation with self-interruption and multi-answering.")
                 start_new_thread(start_calculation, (1,))
 
                 # Set sleep-time before answering.
@@ -47,12 +46,18 @@ async def start_ws():
                 if sleep_time > 0:
                     time.sleep(sleep_time)
 
+                # TODO("Retrying? But how often etc.?")
                 try:
                     # Example of sending an answer for the server.
                     await websocket.send(generated_json(f'{api_globals.action}'))
+
+                    api_globals.reset_action()
+                # TODO("Specify exceptions...")
                 except:
                     logging.error("sending_issues: no answer sent...")
 
-                # TODO("What's about error-handling?")
+            # TODO("Specify exceptions...")
             except:
                 logging.error("connection_error: retrying...")
+
+            # TODO("What's about error-handling (documented in api-documentation)?")
