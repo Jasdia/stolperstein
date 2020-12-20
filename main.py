@@ -32,19 +32,5 @@ mc_globals._init()
 
 # ==================================================================
 # Just for Testing:
-json_testfile = open("./json_test_files/000.json", "r").read()
-api_globals.game_as_class = map_json_to_dataclass(json_testfile)
-print(api_globals.game_as_class)
-simplify_game_data()
-start_calculation(1)
-
-# simplify_game_classes_with_evaluation()
-# print("Qapla'!")
-# simplify_game_classes_without_evaluation()
-# output = next_move_survival(
-#    data_class,
-#    str(data_class.you),
-#    "change_nothing"
-# )
-# print(output)
-
+api_globals.game_as_class = map_json_to_dataclass(open("./json_test_files/000.json", "r").read())
+start_calculation(2)

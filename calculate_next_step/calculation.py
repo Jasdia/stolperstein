@@ -72,7 +72,7 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
     # End-Statement if there is no player left at the position.
     # or if the calculation-depth is reached
     if position == len(players):
-        if test_depth == 0:
+        if not test_depth == 0:
             new_players = []
             for idx, player in enumerate(players):
                 if player.surviving or idx == 0:
