@@ -16,8 +16,7 @@ from calculate_next_step.data_simplification import simplify_game_data
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation(test_depth):
-    game_field, player_list = simplify_game_data()
-    _test_all_options(0, 0, 0, game_field, player_list, test_depth, test_depth, "")
+    _move_iteration(test_depth)
 
     next_action = mc_globals.move_list[0]
     for move in mc_globals.move_list:
@@ -65,6 +64,13 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
     return True, field, players
 
 
+def _move_iteration(test_depth):
+    game_field, player_list = simplify_game_data()
+
+    for move in mc_globals.move_list:
+        _test_all_options(0, 0, 0, game_field, player_list, test_depth, move)
+
+
 # TODO("Check if it really works!")
 # TODO("Check if comments are still right")
 # Recursive function for testing all possible moves of all players (every single combination).
@@ -72,7 +78,7 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
 # The position ist for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
-def _test_all_options(position, death_count, killed_count, field, players, test_depth, actual_depth, tested_move):
+def _test_all_options(position, death_count, killed_count, field, players, test_depth, tested_move):
     # End-Statement if there is no player left at the position.
     # or if the calculation-depth is reached
     if position == len(players):
@@ -81,13 +87,11 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             for idx, player in enumerate(players):
                 if player.surviving or idx == 0:
                     new_players.append(player)
-            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1, actual_depth, tested_move)
+            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1, tested_move)
         return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for idx, move in enumerate(mc_globals.move_list):
-            if test_depth == actual_depth:
-                tested_move = mc_globals.move_list[idx]
             # Interprets the action by calling the function and changes the values of the player to the new action.
             players[position].direction, players[position].speed = _interpret_move(
                 players[position].direction[0],
@@ -100,7 +104,7 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             players[position].surviving, field, players = _set_move(players[position], field, players)
 
             # Function calls itself (recursion)
-            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth, actual_depth, tested_move)
+            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth, tested_move)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
