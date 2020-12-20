@@ -1,7 +1,7 @@
 # Python-libraries
 import os
 import time
-import asyncio
+import logging
 from _thread import start_new_thread
 from websockets import connect
 from datetime import datetime
@@ -23,29 +23,36 @@ KEY = os.getenv('KEY')
 async def start_ws():
     async with connect(f'{URL}?key={KEY}') as websocket:
         while True:
-            play_map = await websocket.recv()
-            api_globals.game_as_class = map_json_to_dataclass(play_map)
+            try:
+                play_map = await websocket.recv()
+                logging.debug("Server-answer: " + play_map)
+                print("Server-answer: " + play_map)
+                api_globals.game_as_class = map_json_to_dataclass(play_map)
+                logging.debug("Mapped on the class: " + str(api_globals.game_as_class))
+                print("Mapped on the class: " + str(api_globals.game_as_class))
 
-            # Just for testing. TODO("remove")
-            print(api_globals.game_as_class)
+                # Disconnect from server if game is over.
+                if not api_globals.game_as_class.running:
+                    return
 
-            # Disconnect from server if game is over.
-            if not api_globals.game_as_class.running:
-                return
+                start_new_thread(start_calculation, (1,))
 
-            start_new_thread(start_calculation, (1, ))
+                # Set sleep-time before answering.
+                sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
+                # One second for answering.
+                sleep_time -= 1
 
-            # Set sleep-time before answering.
-            sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
-            # One second for answering.
-            sleep_time -= 1
+                # Just waits if the deadline is in the future.
+                # It could - for example - be the case, that the server sends an old json-file.
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
 
-            # Just waits if the deadline is in the future.
-            # It could - for example - be the case, that the server sends an old json-file.
-            if sleep_time > 0:
-                time.sleep(sleep_time)
+                try:
+                    # Example of sending an answer for the server.
+                    await websocket.send(generated_json(f'{api_globals.action}'))
+                except:
+                    logging.error("sending_issues: no answer sent...")
 
-            # Example of sending an answer for the server.
-            await websocket.send(generated_json(f'{api_globals.action}'))
-
-            # TODO("What's about error-handling?")
+                # TODO("What's about error-handling?")
+            except:
+                logging.error("connection_error: retrying...")
