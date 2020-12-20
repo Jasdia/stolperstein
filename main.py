@@ -33,4 +33,5 @@ mc_globals._init()
 # ==================================================================
 # Just for Testing:
 api_globals.game_as_class = map_json_to_dataclass(open("./json_test_files/000.json", "r").read())
-start_calculation(2)
+print(api_globals.game_as_class)
+#start_calculation(2)

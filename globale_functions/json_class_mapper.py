@@ -6,15 +6,10 @@ from data_classes.api.Player import Player
 # Maps the incoming json to the Game-class and returns the object.
 def map_json_to_dataclass(json_string):
     json_dict = json.loads(json_string)
+    # Manuel adjustment of players, because the default-mapping would interpret it as dictionary and not as objects.
     players: {str: Player} = {}
     for player in json_dict['players'].items():
-        new_player = Player(
-            player[1]['x'],
-            player[1]['y'],
-            player[1]['direction'],
-            player[1]['speed'],
-            player[1]['active']
-        )
-        players[player[0]] = new_player
+        players[player[0]] = Player(**player[1])
+    # Overriding players in json_dict with the manuel-mapped data.
     json_dict['players'] = players
     return Game(**json_dict)

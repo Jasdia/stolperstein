@@ -1,3 +1,4 @@
+# TODO("Check if deprecated?")
 import api.api_feedback_global_variables as api_globals
 from math import fmod
 
@@ -7,7 +8,7 @@ def next_move_survival(
         player_id,
         action
 ):
-    return next_move_survival_calculation(
+    return _next_move_survival_calculation(
         data_class.players[player_id].x,
         data_class.players[player_id].y,
         data_class.players[player_id].speed,
@@ -19,7 +20,7 @@ def next_move_survival(
     )
 
 
-def next_move_survival_calculation(
+def _next_move_survival_calculation(
         x_position,
         y_position,
         speed,
