@@ -18,9 +18,12 @@ import api.api_feedback_global_variables as api_globals
 URL = os.getenv('URL')
 KEY = os.getenv('KEY')
 
+# TODO("Implement amount_of_moves")
+
 
 # Connection and communication with the server.
 async def start_ws():
+    # TODO("Why is the connection this unstable?")
     async with connect(f'{URL}?key={KEY}') as websocket:
         while True:
             try:

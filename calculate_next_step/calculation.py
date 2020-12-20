@@ -26,6 +26,8 @@ def start_calculation(test_depth):
                 mc_globals.result[move][1] > mc_globals.result[next_action][1]:
             next_action = move
 
+    # TODO("Check if the variable can be set/ is still required.")
+
     api_globals.action = next_action
 
 
