@@ -18,4 +18,5 @@ class Game:
     players: {str: Player}
     you: int
     running: bool
-    deadline: datetime
+    # Default value for the last json (if game-over there is no deadline).
+    deadline: datetime = ""
