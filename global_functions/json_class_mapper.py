@@ -1,5 +1,6 @@
 # Python-libraries
 import json
+from datetime import datetime
 # Other modules from this project
 # classes:
 from data_classes.api.Game import Game
@@ -15,4 +16,5 @@ def map_json_to_dataclass(json_string):
         players[player[0]] = Player(**player[1])
     # Overriding players in json_dict with the manuel-mapped data.
     json_dict['players'] = players
+    json_dict['deadline'] = datetime.strptime(json_dict['deadline'], '%Y-%m-%dT%H:%M:%SZ')
     return Game(**json_dict)
