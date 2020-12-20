@@ -1,7 +1,12 @@
+# TODO("Remove 'created with'-comment.")
 # created with: https://app.quicktype.io/
 
+# Python-libraries
 from dataclasses import dataclass
 from datetime import datetime
+
+# Other modules from this project
+# classes:
 from data_classes.api.Player import Player
 
 
