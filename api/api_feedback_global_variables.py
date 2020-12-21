@@ -28,6 +28,8 @@ amount_of_moves: int
 game_as_class: Game
 # How often should the bot retry to sent an answer to the server.
 amount_of_retrying_sending_an_answer: int
+# How many seconds should be subtracted from the deadline to answer the server.
+answer_time_for_the_bot: int
 
 
 # this function must only be called in main.py
@@ -47,3 +49,5 @@ def _init():
     game_as_class = None
     global amount_of_retrying_sending_an_answer
     amount_of_retrying_sending_an_answer = json_dict['amount_of_retrying_sending_an_answer']
+    global answer_time_for_the_bot
+    answer_time_for_the_bot = json_dict['answer_time_for_the_bot']

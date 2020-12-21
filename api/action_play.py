@@ -44,7 +44,7 @@ async def start_ws():
                     # Set sleep-time before answering.
                     sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
                     # One second for answering.
-                    sleep_time -= 1
+                    sleep_time -= api_globals.answer_time_for_the_bot
 
                     # Just waits if the deadline is in the future.
                     # It could - for example - be the case, that the server sends an old json-file.
