@@ -19,8 +19,8 @@ from calculate_next_step.data_simplification import simplify_game_data
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation(test_depth, step):
     mc_globals.rest_highest_test_step()
-    for _ in range(test_depth):
-        _thread.start_new_thread(_move_iteration, (test_depth, step, ))
+    for i in range(test_depth):
+        _thread.start_new_thread(_move_iteration, (i, step, ))
 
 
 # Calculates a move of one player. The position is needed to get the right filed.
