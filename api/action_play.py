@@ -34,30 +34,34 @@ async def start_ws():
 
                 # Disconnect from server if game is over.
                 if not api_globals.game_as_class.running:
+                    logging.info("The game is over")
                     return
 
-                # TODO("Smarter implementation with self-interruption and multi-answering.")
-                start_new_thread(start_calculation, (1,))
+                if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
+                    # TODO("Smarter implementation with self-interruption and multi-answering.")
+                    start_new_thread(start_calculation, (1,))
 
-                # Set sleep-time before answering.
-                sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
-                # One second for answering.
-                sleep_time -= 1
+                    # Set sleep-time before answering.
+                    sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
+                    # One second for answering.
+                    sleep_time -= 1
 
-                # Just waits if the deadline is in the future.
-                # It could - for example - be the case, that the server sends an old json-file.
-                if sleep_time > 0:
-                    time.sleep(sleep_time)
+                    # Just waits if the deadline is in the future.
+                    # It could - for example - be the case, that the server sends an old json-file.
+                    if sleep_time > 0:
+                        time.sleep(sleep_time)
 
-                # TODO("Retrying? But how often etc.?")
-                try:
-                    # Example of sending an answer for the server.
-                    await websocket.send(generated_json(f'{api_globals.action}'))
+                    # TODO("Retrying? But how often etc.?")
+                    try:
+                        # Example of sending an answer for the server.
+                        await websocket.send(generated_json(f'{api_globals.action}'))
+                        logging.info("answer sent: " + api_globals.action)
 
-                    api_globals.reset_action()
-                # TODO("Specify exceptions...")
-                except:
-                    logging.error("sending_issues: no answer sent...")
+                        api_globals.reset_action()
+                        api_globals.amount_of_moves += 1
+                    # TODO("Specify exceptions...")
+                    except:
+                        logging.error("sending_issues: no answer sent...")
 
             # TODO("Specify exceptions...")
             except:

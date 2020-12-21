@@ -41,7 +41,7 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
     # Iterates every move of the player (cell by cell).
     for n in range(1, player.speed):
         # Checks if the player assigns the cell (because of the gap in the 6. move).
-        if api_globals.amount_of_moves != 6 or n == 1 or n == player.speed:
+        if fmod(api_globals.amount_of_moves, 6) != 0 or n == 1 or n == player.speed:
             x_location = player.x + player.direction[0] * n
             y_location = player.y + player.direction[1] * n
             # Checks whether the player leaves the field.
