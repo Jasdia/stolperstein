@@ -4,6 +4,7 @@
 
 # Python-libraries
 import json
+import logging
 
 
 # Dict with the test-results
@@ -21,3 +22,4 @@ def _init():
     result = {}
     for move in move_list:
         result[move] = [0, 0]
+    logging.info("mc_globals initialized.")

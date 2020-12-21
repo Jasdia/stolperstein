@@ -3,6 +3,7 @@
 
 # Python-libraries
 import json
+import logging
 
 # Other modules from this project
 # classes:
@@ -51,3 +52,4 @@ def _init():
     amount_of_retrying_sending_an_answer = json_dict['amount_of_retrying_sending_an_answer']
     global answer_time_for_the_bot
     answer_time_for_the_bot = json_dict['answer_time_for_the_bot']
+    logging.info("api_globals initialized.")
