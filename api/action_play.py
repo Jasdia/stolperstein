@@ -25,6 +25,7 @@ KEY = os.getenv('KEY')
 async def start_ws():
     # TODO("Why is the connection this unstable?")
     async with connect(f'{URL}?key={KEY}') as websocket:
+        logging.info("Connection established.")
         while True:
             try:
                 play_map = await websocket.recv()
