@@ -18,18 +18,16 @@ import logging
 # Other modules from this project
 # functions:
 from api.action_play import start_ws
-from calculate_next_step.calculation import start_calculation
-from global_functions.json_class_mapper import map_json_to_dataclass
-# from gui.game_frame import create_grid
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
-# import neural_network.nn_global_variables as nn_globals
 
 # Initialize all global-containers
-# nn_globals._init()
 api_globals._init()
 mc_globals._init()
+
+logging.basicConfig()
+logging.root.setLevel(logging.NOTSET)
 
 # Start contact to server
 logging.info("The bot has started...")

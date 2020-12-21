@@ -39,6 +39,7 @@ async def start_ws():
                     return
 
                 if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
+                    logging.info("We are still alive!")
                     # TODO("Smarter implementation with self-interruption and multi-answering.")
                     start_new_thread(start_calculation, (1,))
 
