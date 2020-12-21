@@ -23,6 +23,7 @@ KEY = os.getenv('KEY')
 
 # Connection and communication with the server.
 async def start_ws():
+    # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
     async with connect(f'{URL}?key={KEY}') as websocket:
         logging.info("Connection established.")

@@ -1,0 +1,28 @@
+INFO:root:The bot has started...
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:websockets.protocol:client - state = CONNECTING
+DEBUG:websockets.protocol:client - event = connection_made(<asyncio.sslproto._SSLProtocolTransport object at 0x0000020DFB3B1040>)
+DEBUG:websockets.client:client > GET /spe_ed?key=ZLZ5WGDWS6D7HOLVRSSOXF2GWU4ICALDK4POQ2FMAGKWUIXTDK3LI73M HTTP/1.1
+DEBUG:websockets.client:client > Headers([('Host', 'msoll.de'), ('Upgrade', 'websocket'), ('Connection', 'Upgrade'), ('Sec-WebSocket-Key', 'Zluw/zI1B+386DeNdXkRyA=='), ('Sec-WebSocket-Version', '13'), ('Sec-WebSocket-Extensions', 'permessage-deflate; client_max_window_bits'), ('User-Agent', 'Python/3.9 websockets/8.1')])
+DEBUG:websockets.protocol:client - event = data_received(<413 bytes>)
+DEBUG:websockets.client:client < HTTP/1.1 429 Too Many Requests
+DEBUG:websockets.client:client < Headers([('Content-Length', '0'), ('Content-Security-Policy', "upgrade-insecure-requests; default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob: wss:"), ('Date', 'Mon, 21 Dec 2020 17:50:29 GMT'), ('Referrer-Policy', 'strict-origin'), ('Server', 'Caddy'), ('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload'), ('X-Content-Type-Options', 'nosniff'), ('X-Frame-Options', 'DENY'), ('X-Xss-Protection', '0')])
+DEBUG:websockets.protocol:client ! failing CONNECTING WebSocket connection with code 1006
+DEBUG:websockets.protocol:client x closing TCP connection
+DEBUG:websockets.protocol:client - event = connection_lost(None)
+DEBUG:websockets.protocol:client - state = CLOSED
+DEBUG:websockets.protocol:client x code = 1006, reason = [no reason]
+Traceback (most recent call last):
+  File "C:\Users\jonas\PycharmProjects\stolperstein\main.py", line 34, in <module>
+    get_event_loop().run_until_complete(start_ws())
+  File "C:\Users\jonas\AppData\Local\Programs\Python\Python39\lib\asyncio\base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "C:\Users\jonas\PycharmProjects\stolperstein\api\action_play.py", line 27, in start_ws
+    async with connect(f'{URL}?key={KEY}') as websocket:
+  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 517, in __aenter__
+    return await self
+  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 542, in __await_impl__
+    await protocol.handshake(
+  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 296, in handshake
+    raise InvalidStatusCode(status_code)
+websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429
