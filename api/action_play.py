@@ -51,17 +51,20 @@ async def start_ws():
                     if sleep_time > 0:
                         time.sleep(sleep_time)
 
-                    # TODO("Retrying? But how often etc.?")
-                    try:
-                        # Example of sending an answer for the server.
-                        await websocket.send(generated_json(f'{api_globals.action}'))
-                        logging.info("answer sent: " + api_globals.action)
+                    # Retrying to send the answer to the server.
+                    for _ in range(api_globals.amount_of_retrying_sending_an_answer):
+                        try:
+                            # Example of sending an answer for the server.
+                            await websocket.send(generated_json(f'{api_globals.action}'))
+                            logging.info("answer sent: " + api_globals.action)
 
-                        api_globals.reset_action()
-                        api_globals.amount_of_moves += 1
-                    # TODO("Specify exceptions...")
-                    except:
-                        logging.error("sending_issues: no answer sent...")
+                            api_globals.reset_action()
+                            api_globals.amount_of_moves += 1
+                            # If message is send: break for-loop.
+                            break
+                        # TODO("Specify exceptions...")
+                        except:
+                            logging.error("sending_issues: no answer sent...")
 
             # TODO("Specify exceptions...")
             except:
