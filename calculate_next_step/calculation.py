@@ -59,7 +59,7 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
 
 
 def _move_iteration(test_depth, step):
-    logging.info("manuel_calculation started with depth " + test_depth)
+    logging.info("manuel_calculation started with depth " + str(test_depth))
     game_field, player_list = simplify_game_data()
 
     result = {}
