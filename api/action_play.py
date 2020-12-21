@@ -41,7 +41,7 @@ async def start_ws():
                 if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
                     logging.info("We are still alive!")
                     # TODO("Smarter implementation with self-interruption and multi-answering.")
-                    start_new_thread(start_calculation, (1,))
+                    start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, ))
 
                     # Set sleep-time before answering.
                     sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()

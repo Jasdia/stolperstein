@@ -1,5 +1,7 @@
 # Python-libraries
 from math import fmod
+import _thread
+import logging
 
 # Other modules from this project
 # classes:
@@ -15,20 +17,10 @@ from calculate_next_step.data_simplification import simplify_game_data
 # It maps the players and the field on our locale variables.
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
-def start_calculation(test_depth):
-    _move_iteration(test_depth)
-
-    next_action = mc_globals.move_list[0]
-    for move in mc_globals.move_list:
-        if mc_globals.result[move][0] < mc_globals.result[next_action][0]:
-            next_action = move
-        elif mc_globals.result[move][0] == mc_globals.result[next_action][0] and \
-                mc_globals.result[move][1] > mc_globals.result[next_action][1]:
-            next_action = move
-
-    # TODO("Check if the variable can be set/ is still required.")
-
-    api_globals.action = next_action
+def start_calculation(test_depth, step):
+    mc_globals.rest_highest_test_step()
+    for _ in range(test_depth):
+        _thread.start_new_thread(_move_iteration, (test_depth, step, ))
 
 
 # Calculates a move of one player. The position is needed to get the right filed.
@@ -66,11 +58,27 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
     return True, field, players
 
 
-def _move_iteration(test_depth):
+def _move_iteration(test_depth, step):
+    logging.info("manuel_calculation started with depth " + test_depth)
     game_field, player_list = simplify_game_data()
 
+    result = {}
     for move in mc_globals.move_list:
-        _test_all_options(0, 0, 0, game_field, player_list, test_depth, move)
+        _, _, result[move] = _test_all_options(0, 0, 0, game_field, player_list, test_depth, move, [0, 0])
+
+    next_action = mc_globals.move_list[0]
+    for move in mc_globals.move_list:
+        if result[move][0] < result[next_action][0]:
+            next_action = move
+        elif result[move][0] == result[next_action][0] and result[move][1] > result[next_action][1]:
+            next_action = move
+
+    if api_globals.amount_of_moves == step and test_depth < mc_globals.highest_test_step:
+        logging.info("manuel_calculation finished with depth " + str(test_depth))
+        logging.info(result)
+        logging.info("Answer decided to set to " + next_action)
+        api_globals.action = next_action
+        mc_globals.highest_test_step = test_depth
 
 
 # TODO("Check if it really works!")
@@ -80,7 +88,7 @@ def _move_iteration(test_depth):
 # The position ist for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
-def _test_all_options(position, death_count, killed_count, field, players, test_depth, tested_move):
+def _test_all_options(position, death_count, killed_count, field, players, test_depth, tested_move, result):
     # End-Statement if there is no player left at the position.
     # or if the calculation-depth is reached
     if position == len(players):
@@ -89,8 +97,8 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             for idx, player in enumerate(players):
                 if player.surviving or idx == 0:
                     new_players.append(player)
-            death_count, killed_count = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1, tested_move)
-        return death_count, killed_count
+            death_count, killed_count, result = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1, tested_move, result)
+        return death_count, killed_count, result
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for idx, move in enumerate(mc_globals.move_list):
@@ -106,14 +114,14 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
             players[position].surviving, field, players = _set_move(players[position], field, players)
 
             # Function calls itself (recursion)
-            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth, tested_move)
+            death_count, killed_count, result = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth, tested_move, result)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
             if position == 0:
                 # TODO("get result as a locale variable for calling this function async many times and get death_count
                 #  as percentage")
-                mc_globals.result[tested_move] = [mc_globals.result[tested_move][0] + death_count, mc_globals.result[tested_move][1] + killed_count]
+                result = [result[0] + death_count, result[1] + killed_count]
                 death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
             elif position == len(players) - 1:
@@ -124,7 +132,7 @@ def _test_all_options(position, death_count, killed_count, field, players, test_
                         else:
                             killed_count += 1
         # returns the current death_count and killed_count values.
-        return death_count, killed_count
+        return death_count, killed_count, result
 
 
 # Translates the action (str) to the parameters of the player (sets new speed or changes direction with the x, y tuple).

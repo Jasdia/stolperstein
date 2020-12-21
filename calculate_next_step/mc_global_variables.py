@@ -8,9 +8,16 @@ import logging
 
 
 # Dict with the test-results
-result: {str: [int, int]}
+# result: {str: [int, int]}
 # List of all possible moves defined by the server
 move_list: []
+# Saves the highest test_step
+highest_test_step: int
+
+
+def rest_highest_test_step():
+    global highest_test_step
+    highest_test_step = 0
 
 
 # this function must be called in main.py
@@ -18,8 +25,9 @@ def _init():
     json_dict = json.loads(open("./calculate_next_step/config.json", "r").read())
     global move_list
     move_list = json_dict["move_list"]
-    global result
-    result = {}
-    for move in move_list:
-        result[move] = [0, 0]
+    # global result
+    # result = {}
+    # for move in move_list:
+    #     result[move] = [0, 0]
+    rest_highest_test_step()
     logging.info("mc_globals initialized.")
