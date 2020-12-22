@@ -69,11 +69,13 @@ async def start_ws():
                                 # If message is send: break for-loop.
                                 break
                             # TODO("Specify exceptions...")
-                            except:
+                            except Exception as exc:
+                                error(exc)
                                 error("sending_issues: no answer sent...")
 
                 # TODO("Specify exceptions...")
-                except:
+                except Exception as exc:
+                    error(exc)
                     error("connection_error: retrying...")
     except exceptions.InvalidStatusCode as exc:
         error(exc.args)
@@ -83,5 +85,8 @@ async def start_ws():
             await start_ws()
         else:
             critical("Unknown error accrued. The bot will exit at this point.")
+    except Exception as exc:
+        error(exc)
+        critical("Unknown error accrued. The bot will exit at this point.")
 
             # TODO("What's about error-handling (documented in api-documentation)?")
