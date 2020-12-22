@@ -20,7 +20,7 @@ def simplify_game_data(play_map):
             if play_map['cells'][column][row] != 0:
                 play_map['cells'][column][row] = 10
 
-    return ManuelCalculatedGame(play_map['width'], play_map['height'], play_map['cells'], play_map['players'])
+    return ManuelCalculatedGame(play_map['width'], play_map['height'], play_map['cells'], player_list)
 
 
 # This function maps a Player on a SimplePlayer

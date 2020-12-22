@@ -17,7 +17,7 @@ highest_test_step: int
 
 def rest_highest_test_step():
     global highest_test_step
-    highest_test_step = 0
+    highest_test_step = -1
 
 
 # this function must be called in main.py

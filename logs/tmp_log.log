@@ -1,2 +1,8 @@
-INFO:root:The bot has started...
-INFO:root:Connection established.
+INFO:root:manuel_calculation started with depth 0
+INFO:root:manuel_calculation finished with depth 0
+INFO:root:{'turn_left': (0, 48), 'turn_right': (25, 50), 'slow_down': (25, 50), 'speed_up': (25, 50), 'change_nothing': (25, 50)}
+INFO:root:Answer decided to set to turn_left
+INFO:root:manuel_calculation started with depth 1
+INFO:root:manuel_calculation finished with depth 1
+INFO:root:{'turn_left': (3150, 6300), 'turn_right': (3150, 6300), 'slow_down': (3150, 6300), 'speed_up': (3150, 6300), 'change_nothing': (3150, 6300)}
+INFO:root:Answer decided to set to turn_left

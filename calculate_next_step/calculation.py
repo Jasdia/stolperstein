@@ -20,7 +20,8 @@ def start_calculation(test_depth, step, play_map):
     mc_globals.rest_highest_test_step()
     play_map = simplify_game_data(play_map)
     for i in range(test_depth):
-        start_new_thread(_move_iteration, (i, step, play_map, ))
+        # start_new_thread(_move_iteration, (i, step, play_map, ))
+        _move_iteration(i, step, play_map)
 
 
 def _move_iteration(test_depth, step, play_map):
@@ -38,7 +39,7 @@ def _move_iteration(test_depth, step, play_map):
         elif result[move][0] == result[next_action][0] and result[move][1] > result[next_action][1]:
             next_action = move
 
-    if api_globals.amount_of_moves == step and test_depth < mc_globals.highest_test_step:
+    if api_globals.amount_of_moves == step and test_depth > mc_globals.highest_test_step:
         api_globals.action = next_action
         mc_globals.highest_test_step = test_depth
         info("manuel_calculation finished with depth " + str(test_depth))
@@ -73,8 +74,8 @@ def _set_move(position, action, play_map):
     for n in range(1, play_map.players[position].speed + 1):
         # Checks if the player assigns the cell (because of the gap in the 6. move).
         if fmod(api_globals.amount_of_moves, 6) != 0 or n == 1 or n == play_map.players[position].speed:
-            x_location = play_map.players[position].x + play_map.players[position].direction[0] * n
-            y_location = play_map.players[position].y + play_map.players[position].direction[1] * n
+            x_location = int(play_map.players[position].x + play_map.players[position].direction[0] * n)
+            y_location = int(play_map.players[position].y + play_map.players[position].direction[1] * n)
             # Checks whether the player leaves the field.
             if not (0 <= x_location < play_map.width and 0 <= y_location < play_map.height):
                 play_map.players[position].surviving = False
