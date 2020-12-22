@@ -1,9 +1,9 @@
 # Python-libraries
 import os
-import time
-from logging import info, error
+from time import sleep
+from logging import info, error, critical
 from _thread import start_new_thread
-from websockets import connect
+from websockets import connect, exceptions
 from datetime import datetime
 from json import loads
 
@@ -26,54 +26,62 @@ KEY = os.getenv('KEY')
 async def start_ws():
     # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
-    async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
-        info("Connection established.")
-        while True:
-            try:
-                play_map = loads(await websocket.recv())
-                info("Server-answer: " + play_map)
-                # api_globals.game_as_class = map_json_to_dataclass(play_map)
-                # info("Mapped on the class: " + str(api_globals.game_as_class))
+    try:
+        async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
+            info("Connection established.")
+            while True:
+                try:
+                    play_map = loads(await websocket.recv())
+                    info("Server-answer: " + play_map)
+                    # api_globals.game_as_class = map_json_to_dataclass(play_map)
+                    # info("Mapped on the class: " + str(api_globals.game_as_class))
 
-                # Disconnect from server if game is over.
-                if not play_map['running']:
-                    info("The game is over")
-                    return
+                    # Disconnect from server if game is over.
+                    if not play_map['running']:
+                        info("The game is over")
+                        return
 
-                if play_map['players'][str(play_map['you'])].active:
-                    info("We are still alive!")
-                    # TODO("Smarter implementation with self-interruption and multi-answering.")
-                    start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, play_map, ))
+                    if play_map['players'][str(play_map['you'])].active:
+                        info("We are still alive!")
+                        # TODO("Smarter implementation with self-interruption and multi-answering.")
+                        start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, play_map, ))
 
-                    # Set sleep-time before answering.
-                    deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
-                    sleep_time = (deadline - datetime.utcnow()).total_seconds()
-                    # One second for answering.
-                    sleep_time -= api_globals.answer_time_for_the_bot
+                        # Set sleep-time before answering.
+                        deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+                        sleep_time = (deadline - datetime.utcnow()).total_seconds()
+                        # One second for answering.
+                        sleep_time -= api_globals.answer_time_for_the_bot
 
-                    # Just waits if the deadline is in the future.
-                    # It could - for example - be the case, that the server sends an old json-file.
-                    if sleep_time > 0:
-                        time.sleep(sleep_time)
+                        # Just waits if the deadline is in the future.
+                        # It could - for example - be the case, that the server sends an old json-file.
+                        if sleep_time > 0:
+                            sleep(sleep_time)
 
-                    # Retrying to send the answer to the server.
-                    for _ in range(api_globals.amount_of_retrying_sending_an_answer):
-                        try:
-                            # Example of sending an answer for the server.
-                            await websocket.send(generated_json(f'{api_globals.action}'))
-                            info("answer sent: " + api_globals.action)
+                        # Retrying to send the answer to the server.
+                        for _ in range(api_globals.amount_of_retrying_sending_an_answer):
+                            try:
+                                # Example of sending an answer for the server.
+                                await websocket.send(generated_json(f'{api_globals.action}'))
+                                info("answer sent: " + api_globals.action)
 
-                            api_globals.reset_action()
-                            api_globals.amount_of_moves += 1
-                            # If message is send: break for-loop.
-                            break
-                        # TODO("Specify exceptions...")
-                        except:
-                            error("sending_issues: no answer sent...")
+                                api_globals.reset_action()
+                                api_globals.amount_of_moves += 1
+                                # If message is send: break for-loop.
+                                break
+                            # TODO("Specify exceptions...")
+                            except:
+                                error("sending_issues: no answer sent...")
 
-            # TODO("Specify exceptions...")
-            except Exception as exc:
-                error(exc)
-                error("connection_error: retrying...")
+                # TODO("Specify exceptions...")
+                except:
+                    error("connection_error: retrying...")
+    except exceptions.InvalidStatusCode as exc:
+        error(exc.args)
+        if exc.status_code == 429:
+            info("try reconnecting in one minute...")
+            sleep(60)
+            await start_ws()
+        else:
+            critical("Unknown error accrued. The bot will exit at this point.")
 
             # TODO("What's about error-handling (documented in api-documentation)?")

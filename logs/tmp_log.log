@@ -1,15 +1,12 @@
 INFO:root:The bot has started...
-Traceback (most recent call last):
-  File "C:\Users\jonas\PycharmProjects\stolperstein\main.py", line 34, in <module>
-    get_event_loop().run_until_complete(start_ws())
-  File "C:\Users\jonas\AppData\Local\Programs\Python\Python39\lib\asyncio\base_events.py", line 642, in run_until_complete
-    return future.result()
-  File "C:\Users\jonas\PycharmProjects\stolperstein\api\action_play.py", line 29, in start_ws
-    async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
-  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 517, in __aenter__
-    return await self
-  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 542, in __await_impl__
-    await protocol.handshake(
-  File "C:\Users\jonas\PycharmProjects\stolperstein\venv\lib\site-packages\websockets\client.py", line 296, in handshake
-    raise InvalidStatusCode(status_code)
-websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429
+ERROR:root:('server rejected WebSocket connection: HTTP 429',)
+INFO:root:try reconnecting in one minute...
+ERROR:root:('server rejected WebSocket connection: HTTP 429',)
+INFO:root:try reconnecting in one minute...
+ERROR:root:('server rejected WebSocket connection: HTTP 429',)
+INFO:root:try reconnecting in one minute...
+ERROR:root:('server rejected WebSocket connection: HTTP 429',)
+INFO:root:try reconnecting in one minute...
+ERROR:root:('server rejected WebSocket connection: HTTP 429',)
+INFO:root:try reconnecting in one minute...
+INFO:root:Connection established.
