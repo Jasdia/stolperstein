@@ -35,8 +35,6 @@ async def start_ws():
                 try:
                     play_map = loads(await websocket.recv())
                     info("Server-answer: " + str(play_map))
-                    # api_globals.game_as_class = map_json_to_dataclass(play_map)
-                    # info("Mapped on the class: " + str(api_globals.game_as_class))
 
                     # Disconnect from server if game is over.
                     if not play_map['running']:
