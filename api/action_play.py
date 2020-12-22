@@ -1,11 +1,12 @@
 # Python-libraries
-import os
+from os import getenv
 from time import sleep
 from logging import info, error, critical
 from _thread import start_new_thread
 from websockets import connect, exceptions
 from datetime import datetime
 from json import loads
+from traceback import print_exc
 
 # Other modules from this project
 # functions:
@@ -16,8 +17,8 @@ from calculate_next_step.calculation import start_calculation
 import api.api_feedback_global_variables as api_globals
 
 # Get values from environment-variables.
-URL = os.getenv('URL')
-KEY = os.getenv('KEY')
+URL = getenv('URL')
+KEY = getenv('KEY')
 api_url = f'{URL}?key={KEY}'
 
 # TODO("Implement amount_of_moves")
@@ -28,12 +29,12 @@ async def start_ws():
     # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
     try:
-        async with connect(api_url) as websocket:
+        async with connect(api_url, ping_interval=None) as websocket:
             info("Connection established.")
             while True:
                 try:
                     play_map = loads(await websocket.recv())
-                    info("Server-answer: " + play_map)
+                    info("Server-answer: " + str(play_map))
                     # api_globals.game_as_class = map_json_to_dataclass(play_map)
                     # info("Mapped on the class: " + str(api_globals.game_as_class))
 
@@ -42,7 +43,7 @@ async def start_ws():
                         info("The game is over")
                         return
 
-                    if play_map['players'][str(play_map['you'])].active:
+                    if play_map['players'][str(play_map['you'])]['active']:
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
                         start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, play_map, ))
@@ -78,13 +79,17 @@ async def start_ws():
                 except exceptions.ConnectionClosed as exc:
                     if exc.code == 1006:
                         error("connection lost because of error 1006. Try reconnecting")
-                        websocket = await connect(api_url)
+                        websocket = await connect(api_url, ping_interval=None)
                     else:
-                        error(exc)
-                        error("Connection closed on unpredicted reason.")
+                        critical(exc)
+                        critical(print_exc())
+                        critical("Connection closed on unpredicted reason.")
+                        return
                 except Exception as exc:
-                    error(exc)
-                    error("connection_error: retrying...")
+                    critical(exc)
+                    critical(print_exc())
+                    critical("Connection closed on unpredicted reason.")
+                    return
     except exceptions.InvalidStatusCode as exc:
         error(exc.args)
         if exc.status_code == 429:
@@ -92,9 +97,13 @@ async def start_ws():
             sleep(60)
             await start_ws()
         else:
+            critical(exc)
+            critical(print_exc())
             critical("Unknown error accrued. The bot will exit at this point.")
+            return
     except Exception as exc:
-        error(exc)
+        critical(exc)
+        critical(print_exc())
         critical("Unknown error accrued. The bot will exit at this point.")
 
-            # TODO("What's about error-handling (documented in api-documentation)?")
+    # TODO("What's about error-handling (documented in api-documentation)?")
