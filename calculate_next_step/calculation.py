@@ -1,11 +1,10 @@
 # Python-libraries
 from math import fmod
 from _thread import start_new_thread
-from logging import info, error
+from logging import info
+from deprecated import deprecated
 
 # Other modules from this project
-# classes:
-from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
 import api.api_feedback_global_variables as api_globals
@@ -24,48 +23,13 @@ def start_calculation(test_depth, step, play_map):
         start_new_thread(_move_iteration, (i, step, play_map, ))
 
 
-# Calculates a move of one player. The position is needed to get the right filed.
-# It sets the track of the move (as id on the field) and returns True or False whether the player survives.
-def _set_move(player: ManuelCalculatedPlayer, field, players):
-    # Checks speed for the given limits.
-    if player.speed < 1 or player.speed > 10:
-        return False, field, players
-
-    # Iterates every move of the player (cell by cell).
-    for n in range(1, player.speed):
-        # Checks if the player assigns the cell (because of the gap in the 6. move).
-        if fmod(api_globals.amount_of_moves, 6) != 0 or n == 1 or n == player.speed:
-            x_location = player.x + player.direction[0] * n
-            y_location = player.y + player.direction[1] * n
-            # Checks whether the player leaves the field.
-            if 0 < x_location < api_globals.game_as_class.width and 0 < y_location < api_globals.game_as_class.height:
-                return False, field, players
-            # Checks whether the cell is blocked by some track from the game before.
-            elif field[x_location][y_location] == 10:
-                return False, field, players
-            # Checks whether the cell is blocked by some player in this game.
-            elif field[x_location][y_location] > 0:
-                # Identifies player and kills him too.
-                for idx, other in players:
-                    if other.player_id == field[x_location][y_location]:
-                        players[idx].surviving = False
-                # Sets the field on 10, because both players are dead.
-                field[x_location][y_location] = 10
-                return False, field, players
-            # If the move is all right,sets the id on the cell.
-            else:
-                field[x_location][y_location] += player.player_id
-    # Returns True if the player survives the action.
-    return True, field, players
-
-
 def _move_iteration(test_depth, step, play_map):
     info("manuel_calculation started with depth " + str(test_depth))
 
-
     result = {}
     for move in mc_globals.move_list:
-        _, _, result[move] = _test_all_options(0, 0, 0, game_field, player_list, test_depth, move, [0, 0])
+        play_map = _set_move(0, move, play_map)
+        result[move] = _test_all_options(1, 0, 0, play_map, test_depth, move)
 
     next_action = mc_globals.move_list[0]
     for move in mc_globals.move_list:
@@ -84,6 +48,59 @@ def _move_iteration(test_depth, step, play_map):
         info("manuel_calculation with depth " + str(test_depth) + " finished too late")
 
 
+# Calculates a move of one player. The position is needed to get the right filed.
+# It sets the track of the move (as id on the field) and returns True or False whether the player survives.
+# def _set_move(player: ManuelCalculatedPlayer, field, players):
+def _set_move(position, action, play_map):
+    x_plus_y = play_map.players[position].x + play_map.players[position].y
+    if action == "turn_left":
+        play_map.players[position].x = fmod((play_map.players[position].x + x_plus_y), 2)
+        play_map.players[position].y = fmod((play_map.players[position].y - x_plus_y), 2)
+    elif action == "turn_right":
+        play_map.players[position].x = fmod((play_map.players[position].x - x_plus_y), 2)
+        play_map.players[position].y = fmod((play_map.players[position].y + x_plus_y), 2)
+    elif action == "slow_down":
+        play_map.players[position].speed -= 1
+    elif action == "speed_up":
+        play_map.players[position].speed += 1
+
+    # Checks speed for the given limits.
+    if not 1 <= play_map.players[position].speed <= 10:
+        play_map.players[position].surviving = False
+        return play_map
+
+    # Iterates every move of the player (cell by cell).
+    for n in range(1, play_map.players[position].speed + 1):
+        # Checks if the player assigns the cell (because of the gap in the 6. move).
+        if fmod(api_globals.amount_of_moves, 6) != 0 or n == 1 or n == play_map.players[position].speed:
+            x_location = play_map.players[position].x + play_map.players[position].direction[0] * n
+            y_location = play_map.players[position].y + play_map.players[position].direction[1] * n
+            # Checks whether the player leaves the field.
+            if not (0 <= x_location < play_map.width and 0 <= y_location < play_map.height):
+                play_map.players[position].surviving = False
+                return play_map
+            # Checks whether the cell is blocked by some player in this game.
+            elif play_map.cells[x_location][y_location] > 0:
+                # Checks whether the cell is blocked by some track from the game before.
+                if play_map.cells[x_location][y_location] == 10:
+                    play_map.players[position].surviving = False
+                    return play_map
+                else:
+                    # Identifies player and kills him too.
+                    for idx, other in enumerate(play_map.players):
+                        if other.player_id == play_map.cells[x_location][y_location]:
+                            play_map.players[idx].surviving = False
+                            break
+                    # Sets the field on 10, because both players are dead.
+                    play_map.cells[x_location][y_location] = 10
+                    return play_map
+            # If the move is all right,sets the id on the cell.
+            else:
+                play_map.cells[x_location][y_location] = play_map.players[position].player_id
+    # Returns True if the player survives the action.
+    return play_map
+
+
 # TODO("Check if it really works!")
 # TODO("Check if comments are still right")
 # Recursive function for testing all possible moves of all players (every single combination).
@@ -91,55 +108,59 @@ def _move_iteration(test_depth, step, play_map):
 # The position ist for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
-def _test_all_options(position, death_count, killed_count, field, players, test_depth, tested_move, result):
+def _test_all_options(position, death_count, killed_count, play_map, test_depth, tested_move):
     # End-Statement if there is no player left at the position.
     # or if the calculation-depth is reached
-    if position == len(players):
+    if position == len(play_map.players):
         if not test_depth == 0:
-            new_players = []
-            for idx, player in enumerate(players):
-                if player.surviving or idx == 0:
-                    new_players.append(player)
-            death_count, killed_count, result = _test_all_options(0, death_count, killed_count, field, new_players, test_depth - 1, tested_move, result)
-        return death_count, killed_count, result
+            # new_players = []
+            # for idx, player in enumerate(play_map['players']):
+            #     if player.surviving or idx == 0:
+            #         new_players.append(player)
+            # play_map['players'] = new_players
+            for column in range(0, play_map.height - 1):
+                for row in range(0, play_map.width - 1):
+                    if play_map.cells[column][row] != 0:
+                        play_map.cells[column][row] = 10
+            death_count, killed_count = _test_all_options(0, death_count, killed_count, play_map, test_depth - 1, tested_move)
+        return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
-        for idx, move in enumerate(mc_globals.move_list):
+        for move in mc_globals.move_list:
             # Interprets the action by calling the function and changes the values of the player to the new action.
-            players[position].direction, players[position].speed = _interpret_move(
-                players[position].direction[0],
-                players[position].direction[1],
-                players[position].speed,
-                move
-            )
+            # play_map.players[position].direction, play_map.players[position].speed = _interpret_move(
+            #     play_map.players[position].direction[0],
+            #     play_map.players[position].direction[1],
+            #     play_map.players[position].speed,
+            #     move
+            # )
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
-            players[position].surviving, field, players = _set_move(players[position], field, players)
+            play_map = _set_move(position, move, play_map)
 
             # Function calls itself (recursion)
-            death_count, killed_count, result = _test_all_options(position + 1, death_count, killed_count, field, players, test_depth, tested_move, result)
+            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map, test_depth, tested_move)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
-            if position == 0:
-                # TODO("get result as a locale variable for calling this function async many times and get death_count
-                #  as percentage")
-                result = [result[0] + death_count, result[1] + killed_count]
-                death_count, killed_count = 0, 0
+            # if position == 0:
+            #     result = [result[0] + death_count, result[1] + killed_count]
+            #     death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
-            elif position == len(players) - 1:
-                for index, player in enumerate(players):
+            if position == len(play_map.players) - 1:
+                for index, player in enumerate(play_map.players):
                     if not player.surviving:
                         if index == 0:
                             death_count += 1
                         else:
                             killed_count += 1
         # returns the current death_count and killed_count values.
-        return death_count, killed_count, result
+        return death_count, killed_count
 
 
 # Translates the action (str) to the parameters of the player (sets new speed or changes direction with the x, y tuple).
 # This function doesn't change any value of the player directly, but returns the parameters.
+@deprecated(reason="Included in another function.")
 def _interpret_move(x, y, speed, action):
     x_plus_y = x + y
     if action == "turn_left":
