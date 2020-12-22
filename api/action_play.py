@@ -18,6 +18,7 @@ import api.api_feedback_global_variables as api_globals
 # Get values from environment-variables.
 URL = os.getenv('URL')
 KEY = os.getenv('KEY')
+api_url = f'{URL}?key={KEY}'
 
 # TODO("Implement amount_of_moves")
 
@@ -27,7 +28,7 @@ async def start_ws():
     # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
     try:
-        async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
+        async with connect(api_url) as websocket:
             info("Connection established.")
             while True:
                 try:
@@ -74,6 +75,13 @@ async def start_ws():
                                 error("sending_issues: no answer sent...")
 
                 # TODO("Specify exceptions...")
+                except exceptions.ConnectionClosed as exc:
+                    if exc.code == 1006:
+                        error("connection lost because of error 1006. Try reconnecting")
+                        websocket = await connect(api_url)
+                    else:
+                        error(exc)
+                        error("Connection closed on unpredicted reason.")
                 except Exception as exc:
                     error(exc)
                     error("connection_error: retrying...")
