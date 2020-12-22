@@ -136,7 +136,8 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             # )
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
-            play_map = _set_move(position, move, play_map)
+            if play_map.players[position].surviving:
+                play_map = _set_move(position, move, play_map)
 
             # Function calls itself (recursion)
             death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map, test_depth, tested_move)
