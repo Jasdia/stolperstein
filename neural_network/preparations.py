@@ -2,6 +2,7 @@ from data_classes.neural_network.SimplePlayer import SimplePlayer
 from data_classes.neural_network.SimpleGame import SimpleGame
 import neural_network.nn_global_variables as nn_globals
 import api.api_feedback_global_variables as api_globals
+from deprecated import deprecated
 
 
 # This methode maps the GameClass on the SimpleGameClass.
@@ -9,6 +10,7 @@ import api.api_feedback_global_variables as api_globals
 # Every unnecessary data will not be mapped ant the str will be translated to int.
 # This specific method will also evaluate the last step by checking if the Game is over,
 # if we are still living and if we killed someone.
+@deprecated(reason="Probably oversize!")
 def simplify_game_classes_with_evaluation():
     if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
         players: {str: SimplePlayer} = {}
@@ -45,6 +47,7 @@ def simplify_game_classes_with_evaluation():
 # Every unnecessary data will not be mapped ant the str will be translated to int.
 # This specific methode does not evaluate the last step and is only called at the first action
 # in a game or in the learning process with saved json-files.
+@deprecated(reason="Probably oversize!")
 def simplify_game_classes_without_evaluation():
     players: {str: SimplePlayer} = {}
     you = None
@@ -64,6 +67,7 @@ def simplify_game_classes_without_evaluation():
 
 
 # This function maps a Player on a SimplePlayer
+@deprecated(reason="Probably oversize!")
 def simple_player_mapping(player: dict):
     direction: int
     if player.direction == "up":

@@ -1,8 +1,10 @@
 from tkinter import *
+from deprecated import deprecated
 
 frame = Tk()
 
 
+@deprecated(reason="Probably oversize!")
 def create_grid(field, players):
     for idx, row in enumerate(field):
         for idy, cell in enumerate(row):
