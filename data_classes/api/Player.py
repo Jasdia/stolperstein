@@ -3,8 +3,10 @@
 
 # Python-libraries
 from dataclasses import dataclass
+from deprecated import deprecated
 
 
+@deprecated(reason="Not useful at all.")
 @dataclass
 class Player:
     x: int

@@ -26,7 +26,7 @@ def reset_action():
 # (for the extra rule).
 amount_of_moves: int
 # Holds the object which contains the data received from the game-server.
-game_as_class: Game
+# game_as_class: Game
 # How often should the bot retry to sent an answer to the server.
 amount_of_retrying_sending_an_answer: int
 # How many seconds should be subtracted from the deadline to answer the server.
@@ -48,8 +48,8 @@ def _init():
     global amount_of_moves
     amount_of_moves = 1
     # Initializes the variable with none, because there is no data to create an object.
-    global game_as_class
-    game_as_class = None
+    # global game_as_class
+    # game_as_class = None
     global amount_of_retrying_sending_an_answer
     amount_of_retrying_sending_an_answer = json_dict['amount_of_retrying_sending_an_answer']
     global answer_time_for_the_bot

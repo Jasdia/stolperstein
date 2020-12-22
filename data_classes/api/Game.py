@@ -4,12 +4,14 @@
 # Python-libraries
 from dataclasses import dataclass
 from datetime import datetime
+from deprecated import deprecated
 
 # Other modules from this project
 # classes:
 from data_classes.api.Player import Player
 
 
+@deprecated(reason="Not useful at all.")
 @dataclass
 class Game:
     width: int

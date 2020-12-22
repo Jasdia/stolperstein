@@ -1,7 +1,7 @@
 # Python-libraries
 from math import fmod
-import _thread
-import logging
+from _thread import start_new_thread
+from logging import info, error
 
 # Other modules from this project
 # classes:
@@ -17,10 +17,11 @@ from calculate_next_step.data_simplification import simplify_game_data
 # It maps the players and the field on our locale variables.
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
-def start_calculation(test_depth, step):
+def start_calculation(test_depth, step, play_map):
     mc_globals.rest_highest_test_step()
+    play_map = simplify_game_data(play_map)
     for i in range(test_depth):
-        _thread.start_new_thread(_move_iteration, (i, step, ))
+        start_new_thread(_move_iteration, (i, step, play_map, ))
 
 
 # Calculates a move of one player. The position is needed to get the right filed.
@@ -58,9 +59,9 @@ def _set_move(player: ManuelCalculatedPlayer, field, players):
     return True, field, players
 
 
-def _move_iteration(test_depth, step):
-    logging.info("manuel_calculation started with depth " + str(test_depth))
-    game_field, player_list = simplify_game_data()
+def _move_iteration(test_depth, step, play_map):
+    info("manuel_calculation started with depth " + str(test_depth))
+
 
     result = {}
     for move in mc_globals.move_list:
@@ -74,11 +75,13 @@ def _move_iteration(test_depth, step):
             next_action = move
 
     if api_globals.amount_of_moves == step and test_depth < mc_globals.highest_test_step:
-        logging.info("manuel_calculation finished with depth " + str(test_depth))
-        logging.info(result)
-        logging.info("Answer decided to set to " + next_action)
         api_globals.action = next_action
         mc_globals.highest_test_step = test_depth
+        info("manuel_calculation finished with depth " + str(test_depth))
+        info(result)
+        info("Answer decided to set to " + next_action)
+    else:
+        info("manuel_calculation with depth " + str(test_depth) + " finished too late")
 
 
 # TODO("Check if it really works!")

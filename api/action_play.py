@@ -1,10 +1,11 @@
 # Python-libraries
 import os
 import time
-import logging
+from logging import info, error
 from _thread import start_new_thread
 from websockets import connect
 from datetime import datetime
+from json import loads
 
 # Other modules from this project
 # functions:
@@ -26,26 +27,27 @@ async def start_ws():
     # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
     async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
-        logging.info("Connection established.")
+        info("Connection established.")
         while True:
             try:
-                play_map = await websocket.recv()
-                logging.info("Server-answer: " + play_map)
-                api_globals.game_as_class = map_json_to_dataclass(play_map)
-                logging.info("Mapped on the class: " + str(api_globals.game_as_class))
+                play_map = loads(await websocket.recv())
+                info("Server-answer: " + play_map)
+                # api_globals.game_as_class = map_json_to_dataclass(play_map)
+                # info("Mapped on the class: " + str(api_globals.game_as_class))
 
                 # Disconnect from server if game is over.
-                if not api_globals.game_as_class.running:
-                    logging.info("The game is over")
+                if not play_map['running']:
+                    info("The game is over")
                     return
 
-                if api_globals.game_as_class.players[str(api_globals.game_as_class.you)].active:
-                    logging.info("We are still alive!")
+                if play_map['players'][str(play_map['you'])].active:
+                    info("We are still alive!")
                     # TODO("Smarter implementation with self-interruption and multi-answering.")
-                    start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, ))
+                    start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, play_map, ))
 
                     # Set sleep-time before answering.
-                    sleep_time = (api_globals.game_as_class.deadline - datetime.utcnow()).total_seconds()
+                    deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+                    sleep_time = (deadline - datetime.utcnow()).total_seconds()
                     # One second for answering.
                     sleep_time -= api_globals.answer_time_for_the_bot
 
@@ -59,7 +61,7 @@ async def start_ws():
                         try:
                             # Example of sending an answer for the server.
                             await websocket.send(generated_json(f'{api_globals.action}'))
-                            logging.info("answer sent: " + api_globals.action)
+                            info("answer sent: " + api_globals.action)
 
                             api_globals.reset_action()
                             api_globals.amount_of_moves += 1
@@ -67,10 +69,10 @@ async def start_ws():
                             break
                         # TODO("Specify exceptions...")
                         except:
-                            logging.error("sending_issues: no answer sent...")
+                            error("sending_issues: no answer sent...")
 
             # TODO("Specify exceptions...")
             except:
-                logging.error("connection_error: retrying...")
+                error("connection_error: retrying...")
 
             # TODO("What's about error-handling (documented in api-documentation)?")
