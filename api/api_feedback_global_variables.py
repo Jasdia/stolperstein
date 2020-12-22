@@ -1,6 +1,6 @@
 # Python-libraries
-import json
-import logging
+from json import loads
+from logging import info
 
 # The next action that will be performed by the bot.
 action: str
@@ -25,7 +25,7 @@ test_depth: int
 
 # this function must only be called in main.py
 def _init():
-    json_dict = json.loads(open("./api/config.json", "r").read())
+    json_dict = loads(open("./api/config.json", "r").read())
     # Sets the default-value to 'change_nothing' in case the function is too slow.
     reset_action()
     # Sets the value to one, because the number will be changed after every move.
@@ -35,6 +35,6 @@ def _init():
     amount_of_retrying_sending_an_answer = json_dict['amount_of_retrying_sending_an_answer']
     global answer_time_for_the_bot
     answer_time_for_the_bot = json_dict['answer_time_for_the_bot']
-    logging.info("api_globals initialized.")
+    info("api_globals initialized.")
     global test_depth
     test_depth = json_dict['test_depth']

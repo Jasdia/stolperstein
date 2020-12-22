@@ -13,7 +13,7 @@
 
 # Python-libraries
 from asyncio import get_event_loop
-import logging
+from logging import info, INFO, basicConfig, root
 
 # Other modules from this project
 # functions:
@@ -26,11 +26,12 @@ import api.api_feedback_global_variables as api_globals
 api_globals._init()
 mc_globals._init()
 
-logging.basicConfig()
-logging.root.setLevel(logging.INFO)
+# Sets the logging-level to INFO.
+basicConfig()
+root.setLevel(INFO)
 
 # Start contact to server
-logging.info("The bot has started...")
+info("The bot has started...")
 get_event_loop().run_until_complete(start_ws())
 
 # ==================================================================

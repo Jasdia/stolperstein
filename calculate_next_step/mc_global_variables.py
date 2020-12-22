@@ -1,6 +1,6 @@
 # Python-libraries
-import json
-import logging
+from json import loads
+from logging import info
 
 
 # List of all possible moves defined by the server
@@ -16,8 +16,8 @@ def rest_highest_test_step():
 
 # this function must be called in main.py
 def _init():
-    json_dict = json.loads(open("./calculate_next_step/config.json", "r").read())
+    json_dict = loads(open("./calculate_next_step/config.json", "r").read())
     global move_list
     move_list = json_dict["move_list"]
     rest_highest_test_step()
-    logging.info("mc_globals initialized.")
+    info("mc_globals initialized.")
