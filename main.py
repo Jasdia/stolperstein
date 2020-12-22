@@ -27,7 +27,7 @@ api_globals._init()
 mc_globals._init()
 
 logging.basicConfig()
-logging.root.setLevel(logging.NOTSET)
+logging.root.setLevel(logging.INFO)
 
 # Start contact to server
 logging.info("The bot has started...")

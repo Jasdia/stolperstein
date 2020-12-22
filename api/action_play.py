@@ -72,7 +72,8 @@ async def start_ws():
                             error("sending_issues: no answer sent...")
 
             # TODO("Specify exceptions...")
-            except:
+            except Exception as exc:
+                error(exc)
                 error("connection_error: retrying...")
 
             # TODO("What's about error-handling (documented in api-documentation)?")
