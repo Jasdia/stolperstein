@@ -25,7 +25,7 @@ KEY = os.getenv('KEY')
 async def start_ws():
     # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
     # TODO("Why is the connection this unstable?")
-    async with connect(f'{URL}?key={KEY}') as websocket:
+    async with connect(f'{URL}?key={KEY}', ping_interval=None) as websocket:
         logging.info("Connection established.")
         while True:
             try:
