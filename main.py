@@ -31,17 +31,20 @@ basicConfig()
 root.setLevel(INFO)
 
 # Start contact to server
-info("The bot has started...")
-get_event_loop().run_until_complete(start_ws())
+# info("The bot has started...")
+# get_event_loop().run_until_complete(start_ws())
 
 # ==================================================================
 # Just for Testing:
-# from json import loads
-# json_testfile = loads(open("./json_test_files/000.json", "r").read())
-# from calculate_next_step.calculation import start_calculation
-# import api.api_feedback_global_variables as api_globals
-# api_globals.amount_of_moves = 10
-# start_calculation(2, 10, json_testfile)
+from json import loads
+json_testfile = loads(open("./json_test_files/002.json", "r").read())
+from calculate_next_step.calculation import start_calculation
+import api.api_feedback_global_variables as api_globals
+api_globals.amount_of_moves = 10
+print(json_testfile)
+start_calculation(2, 10, json_testfile)
 # api_globals.game_as_class = map_json_to_dataclass(json_testfile)
 # create_grid(api_globals.game_as_class.cells, api_globals.game_as_class.players)
 # start_calculation(1)
+from time import sleep
+sleep(60)

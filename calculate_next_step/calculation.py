@@ -17,15 +17,17 @@ from calculate_next_step.data_simplification import simplify_game_data
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation(test_depth, step, play_map):
+    print(play_map)
     mc_globals.rest_highest_test_step()
     play_map = simplify_game_data(play_map)
     for i in range(test_depth):
+        print(i)
         start_new_thread(_move_iteration, (i, step, play_map, ))
 
 
 def _move_iteration(test_depth, step, play_map):
     info("manuel_calculation started with depth " + str(test_depth))
-
+    print("lol")
     result = {}
     for move in mc_globals.move_list:
         play_map = _set_move(0, move, play_map)
