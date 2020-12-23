@@ -148,7 +148,7 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             #     result = [result[0] + death_count, result[1] + killed_count]
             #     death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
-            if position == len(play_map.players) - 1:
+            if position == len(play_map.players) - 1 and test_depth == 0:
                 for index, player in enumerate(play_map.players):
                     if not player.surviving:
                         if index == 0:
