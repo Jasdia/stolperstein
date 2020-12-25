@@ -27,13 +27,13 @@ def simplify_game_data(play_map):
 def _simple_player_mapping(player: {str: any}, player_id: int):
     direction: (int, int)
     if player['direction'] == "up":
-        direction = (0, -1)
+        direction = [0, -1]
     elif player['direction'] == "right":
-        direction = (1, 0)
+        direction = [1, 0]
     elif player['direction'] == "down":
-        direction = (0, 1)
+        direction = [0, 1]
     else:
-        direction = (-1, 0)
+        direction = [-1, 0]
     return ManuelCalculatedPlayer(
         player['x'],
         player['y'],
