@@ -1,0 +1,5 @@
+{
+  "position": 0,
+  "action": "turn_right",
+  "api_globals.amount_of_moves": 1
+}

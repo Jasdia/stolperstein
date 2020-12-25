@@ -14,7 +14,7 @@ class TestCalculation(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestCalculation, self).__init__(*args, **kwargs)
         self._root_path = str(Path(__file__).parent.absolute())
-        self.path = self._root_path + "/res"
+        self.path = self._root_path + "/_set_move"
         api_globals._init()
 
     def test__set_move(self):

@@ -56,11 +56,9 @@ def _move_iteration(test_depth, step, play_map):
 def _set_move(position, action, play_map):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
-        # TODO("Change to now orientation")
         play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] + x_plus_y), 2)
         play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] - x_plus_y), 2)
     elif action == "turn_right":
-        # TODO("Change to now orientation")
         play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] - x_plus_y), 2)
         play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] + x_plus_y), 2)
     elif action == "slow_down":
