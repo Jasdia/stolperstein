@@ -44,7 +44,8 @@ async def start_ws():
                     if play_map['players'][str(play_map['you'])]['active']:
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
-                        start_new_thread(start_calculation, (api_globals.test_depth, api_globals.amount_of_moves, play_map, ))
+                        start_new_thread(start_calculation,
+                                         (api_globals.test_depth, api_globals.amount_of_moves, play_map,))
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')

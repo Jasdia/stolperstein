@@ -3,7 +3,7 @@ import os
 from json import loads
 from pathlib import Path
 
-from calculate_next_step.calculation import _set_move, _test_all_options
+from calculate_next_step.calculation import _calculate_move, _test_all_options
 from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 import api.api_feedback_global_variables as api_globals
@@ -41,7 +41,7 @@ class TestCalculation(unittest.TestCase):
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
 
-            test_result = _set_move(parameters["position"], parameters["action"], test_data_class)
+            test_result = _calculate_move(parameters["position"], parameters["action"], test_data_class)
             self.assertEqual(result_data_class, test_result, msg="_set_move number: " + str(i) + " failed.")
 
     def test__test_all_options(self):

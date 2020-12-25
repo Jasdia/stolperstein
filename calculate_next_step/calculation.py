@@ -17,7 +17,6 @@ from calculate_next_step.data_simplification import simplify_game_data
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation(test_depth, step, play_map):
-    print(play_map)
     mc_globals.rest_highest_test_step()
     play_map = simplify_game_data(play_map)
     for i in range(test_depth):
@@ -30,7 +29,7 @@ def _move_iteration(test_depth, step, play_map):
     print("lol")
     result = {}
     for move in mc_globals.move_list:
-        play_map = _set_move(0, move, play_map)
+        play_map = _calculate_move(0, move, play_map)
         result[move] = _test_all_options(1, 0, 0, play_map, test_depth, move)
 
     next_action = mc_globals.move_list[0]
@@ -53,7 +52,7 @@ def _move_iteration(test_depth, step, play_map):
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
 # def _set_move(player: ManuelCalculatedPlayer, field, players):
-def _set_move(position, action, play_map):
+def _calculate_move(position: int, action: str, play_map):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
         play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] + x_plus_y), 2)
@@ -150,12 +149,12 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             # Calls the set_move-function to set the new action and checking whether the player survives.
             if play_map.players[position].surviving:
                 # Function calls itself (recursion)
-                print(play_map.players[position])
-                _ = _set_move(position, move, play_map)
-                print(play_map.players[position])
+                print(move + ": " + str(play_map.players[position]))
+                tmp_map = _calculate_move(position, move, play_map)
+                print(move + ": " + str(play_map.players[position]))
                 # death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, tmp_map,
                 #                                               test_depth, tested_move)
-                print(play_map.players[position])
+                print(move + ": " + str(play_map.players[position]))
             else:
                 # Function calls itself (recursion)
                 death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map,
