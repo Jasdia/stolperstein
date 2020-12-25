@@ -138,6 +138,7 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.move_list:
+            print(move)
             # Interprets the action by calling the function and changes the values of the player to the new action.
             # play_map.players[position].direction, play_map.players[position].speed = _interpret_move(
             #     play_map.players[position].direction[0],
@@ -148,10 +149,17 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
             if play_map.players[position].surviving:
-                play_map = _set_move(position, move, play_map)
-
-            # Function calls itself (recursion)
-            death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map, test_depth, tested_move)
+                # Function calls itself (recursion)
+                print(play_map.players[position])
+                _ = _set_move(position, move, play_map)
+                print(play_map.players[position])
+                # death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, tmp_map,
+                #                                               test_depth, tested_move)
+                print(play_map.players[position])
+            else:
+                # Function calls itself (recursion)
+                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map,
+                                                              test_depth, tested_move)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
             # values.
