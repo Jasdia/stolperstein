@@ -7,6 +7,7 @@ from calculate_next_step.calculation import _set_move, _test_all_options
 from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 import api.api_feedback_global_variables as api_globals
+import calculate_next_step.mc_global_variables as mc_globals
 
 
 class TestCalculation(unittest.TestCase):
@@ -15,6 +16,7 @@ class TestCalculation(unittest.TestCase):
         super(TestCalculation, self).__init__(*args, **kwargs)
         self._root_path = str(Path(__file__).parent.absolute())
         api_globals._init()
+        mc_globals._init()
 
     def test__set_move(self):
         path = self._root_path + "/_set_move"
@@ -62,7 +64,7 @@ class TestCalculation(unittest.TestCase):
             tmp_file = open(path + "/" + str(i) + "_result.json", "r")
             result_data = loads(tmp_file.read())
             tmp_file.close()
-            result_data = [result_data["death_count"], result_data["killed_count"]]
+            result_data = (result_data["death_count"], result_data["killed_count"])
 
             test_result = _test_all_options(parameters["position"], parameters["death_count"], parameters["killed_count"], test_data_class, parameters["test_depth"], parameters["tested_move"])
             self.assertEqual(result_data, test_result, msg="_test_all_options number: " + str(i) + " failed.")
