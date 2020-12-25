@@ -54,13 +54,13 @@ def _move_iteration(test_depth, step, play_map):
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
 # def _set_move(player: ManuelCalculatedPlayer, field, players):
 def _set_move(position, action, play_map):
-    x_plus_y = play_map.players[position].x + play_map.players[position].y
+    x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
-        play_map.players[position].x = fmod((play_map.players[position].x + x_plus_y), 2)
-        play_map.players[position].y = fmod((play_map.players[position].y - x_plus_y), 2)
+        play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] + x_plus_y), 2)
+        play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] - x_plus_y), 2)
     elif action == "turn_right":
-        play_map.players[position].x = fmod((play_map.players[position].x - x_plus_y), 2)
-        play_map.players[position].y = fmod((play_map.players[position].y + x_plus_y), 2)
+        play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] - x_plus_y), 2)
+        play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] + x_plus_y), 2)
     elif action == "slow_down":
         play_map.players[position].speed -= 1
     elif action == "speed_up":
@@ -82,23 +82,23 @@ def _set_move(position, action, play_map):
                 play_map.players[position].surviving = False
                 return play_map
             # Checks whether the cell is blocked by some player in this game.
-            elif play_map.cells[x_location][y_location] > 0:
+            elif play_map.cells[y_location][x_location] > 0:
                 # Checks whether the cell is blocked by some track from the game before.
-                if play_map.cells[x_location][y_location] == 10:
+                if play_map.cells[y_location][x_location] == 10:
                     play_map.players[position].surviving = False
                     return play_map
                 else:
                     # Identifies player and kills him too.
                     for idx, other in enumerate(play_map.players):
-                        if other.player_id == play_map.cells[x_location][y_location]:
+                        if other.player_id == play_map.cells[y_location][x_location]:
                             play_map.players[idx].surviving = False
                             break
                     # Sets the field on 10, because both players are dead.
-                    play_map.cells[x_location][y_location] = 10
+                    play_map.cells[y_location][x_location] = 10
                     return play_map
             # If the move is all right,sets the id on the cell.
             else:
-                play_map.cells[x_location][y_location] = play_map.players[position].player_id
+                play_map.cells[y_location][x_location] = play_map.players[position].player_id
     # Returns True if the player survives the action.
     return play_map
 
