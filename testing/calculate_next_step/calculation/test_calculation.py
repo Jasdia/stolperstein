@@ -3,11 +3,33 @@ import os
 from json import loads
 from pathlib import Path
 
-from calculate_next_step.calculation import _calculate_move, _test_all_options
+from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration
 from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
+
+
+def load_an_ManuelCalculatedGame_object(path: str, i: str):
+    tmp_file = open(path + "/" + i + "_data.json", "r")
+    test_data = loads(tmp_file.read())
+    tmp_file.close()
+    test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
+    return ManuelCalculatedGame(**test_data)
+
+
+def load_files(path: str, i: str):
+    test_data_class = load_an_ManuelCalculatedGame_object(path, i)
+
+    tmp_file = open(path + "/" + i + "_parameters.json", "r")
+    parameters = loads(tmp_file.read())
+    tmp_file.close()
+
+    tmp_file = open(path + "/" + str(i) + "_result.json", "r")
+    result_data = loads(tmp_file.read())
+    tmp_file.close()
+
+    return test_data_class, parameters, result_data
 
 
 class TestCalculation(unittest.TestCase):
@@ -23,21 +45,10 @@ class TestCalculation(unittest.TestCase):
         files = next(os.walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            tmp_file = open(path + "/" + str(i) + "_data.json", "r")
-            test_data = loads(tmp_file.read())
-            tmp_file.close()
-            test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
-            test_data_class = ManuelCalculatedGame(**test_data)
-
-            tmp_file = open(path + "/" + str(i) + "_parameters.json", "r")
-            parameters = loads(tmp_file.read())
-            tmp_file.close()
+            test_data_class, parameters, result_data = load_files(path, str(i))
 
             api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
 
-            tmp_file = open(path + "/" + str(i) + "_result.json", "r")
-            result_data = loads(tmp_file.read())
-            tmp_file.close()
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
 
@@ -49,22 +60,26 @@ class TestCalculation(unittest.TestCase):
         files = next(os.walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            tmp_file = open(path + "/" + str(i) + "_data.json", "r")
-            test_data = loads(tmp_file.read())
-            tmp_file.close()
-            test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
-            test_data_class = ManuelCalculatedGame(**test_data)
-
-            tmp_file = open(path + "/" + str(i) + "_parameters.json", "r")
-            parameters = loads(tmp_file.read())
-            tmp_file.close()
+            test_data_class, parameters, result_data = load_files(path, str(i))
 
             api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
 
-            tmp_file = open(path + "/" + str(i) + "_result.json", "r")
-            result_data = loads(tmp_file.read())
-            tmp_file.close()
             result_data = (result_data["death_count"], result_data["killed_count"])
 
             test_result = _test_all_options(parameters["position"], parameters["death_count"], parameters["killed_count"], test_data_class, parameters["test_depth"], parameters["tested_move"])
+            self.assertEqual(result_data, test_result, msg="_test_all_options number: " + str(i) + " failed.")
+
+    def test__move_iteration(self):
+        path = self._root_path + "/_move_iteration"
+        files = next(os.walk(path))[2]
+        count = len(files)
+        for i in range(int(count / 3)):
+            test_data_class, parameters, result_data = load_files(path, str(i))
+
+            api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
+
+            result_data = (result_data["api_globals.action"], result_data["mc_globals.highest_test_step"])
+
+            _move_iteration(parameters["test_depth"], parameters["step"], test_data_class)
+            test_result = (api_globals.action, mc_globals.highest_test_step)
             self.assertEqual(result_data, test_result, msg="_test_all_options number: " + str(i) + " failed.")

@@ -27,7 +27,6 @@ def start_calculation(test_depth, step, play_map):
 
 def _move_iteration(test_depth, step, play_map):
     info("manuel_calculation started with depth " + str(test_depth))
-    print("lol")
     result = {}
     for move in mc_globals.move_list:
         play_map = _calculate_move(0, move, play_map)
