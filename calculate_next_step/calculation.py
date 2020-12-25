@@ -3,6 +3,7 @@ from math import fmod
 from _thread import start_new_thread
 from logging import info
 from deprecated import deprecated
+from copy import deepcopy
 
 # Other modules from this project
 # global variables (see conventions in *_global_variables.py):
@@ -128,16 +129,23 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             #     if player.surviving or idx == 0:
             #         new_players.append(player)
             # play_map['players'] = new_players
-            for column in range(0, play_map.height - 1):
-                for row in range(0, play_map.width - 1):
-                    if play_map.cells[column][row] != 0:
-                        play_map.cells[column][row] = 10
-            death_count, killed_count = _test_all_options(0, death_count, killed_count, play_map, test_depth - 1, tested_move)
+            tmp_map = deepcopy(play_map)
+            for column in range(0, tmp_map.height - 1):
+                for row in range(0, tmp_map.width - 1):
+                    if tmp_map.cells[column][row] != 0:
+                        tmp_map.cells[column][row] = 10
+            death_count, killed_count = _test_all_options(0, death_count, killed_count, tmp_map, test_depth - 1, tested_move)
+        else:
+            for index, player in enumerate(play_map.players):
+                if not player.surviving:
+                    if index == 0:
+                        death_count += 1
+                    else:
+                        killed_count += 1
         return death_count, killed_count
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.move_list:
-            print(move)
             # Interprets the action by calling the function and changes the values of the player to the new action.
             # play_map.players[position].direction, play_map.players[position].speed = _interpret_move(
             #     play_map.players[position].direction[0],
@@ -149,15 +157,12 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             # Calls the set_move-function to set the new action and checking whether the player survives.
             if play_map.players[position].surviving:
                 # Function calls itself (recursion)
-                print(move + ": " + str(play_map.players[position]))
-                tmp_map = _calculate_move(position, move, play_map)
-                print(move + ": " + str(play_map.players[position]))
-                # death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, tmp_map,
-                #                                               test_depth, tested_move)
-                print(move + ": " + str(play_map.players[position]))
+                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
+                                                              _calculate_move(position, move, deepcopy(play_map)),
+                                                              test_depth, tested_move)
             else:
                 # Function calls itself (recursion)
-                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, play_map,
+                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, deepcopy(play_map),
                                                               test_depth, tested_move)
 
             # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
@@ -166,13 +171,13 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             #     result = [result[0] + death_count, result[1] + killed_count]
             #     death_count, killed_count = 0, 0
             # Evaluates the combination if the last player is reached.
-            if position == len(play_map.players) - 1 and test_depth == 0:
-                for index, player in enumerate(play_map.players):
-                    if not player.surviving:
-                        if index == 0:
-                            death_count += 1
-                        else:
-                            killed_count += 1
+            # if position == len(play_map.players) - 1 and test_depth == 0:
+            #     for index, player in enumerate(play_map.players):
+            #         if not player.surviving:
+            #             if index == 0:
+            #                 death_count += 1
+            #             else:
+            #                 killed_count += 1
         # returns the current death_count and killed_count values.
         return death_count, killed_count
 
