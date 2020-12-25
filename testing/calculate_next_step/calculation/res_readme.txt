@@ -13,3 +13,6 @@
 #  9: Player at position 4 - crash with another player in one move
 # 10: Player at position 4 - jump over other player
 # 11: Player at position 4 - crash into a 10-field
+
+# _test_all_options():
+#  0: move is slow_down
