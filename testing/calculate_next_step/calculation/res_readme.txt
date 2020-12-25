@@ -4,3 +4,4 @@
 # 1: Player at position 0 - set speed from 10 to 11
 # 2: Player at position 4 - direction: left (move off the field)
 # 3: Player at position 1 - direction: up (move off the field)
+# 4: Player at position 3 - direction: down (move off the field)
