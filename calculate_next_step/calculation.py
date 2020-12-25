@@ -21,7 +21,6 @@ def start_calculation(test_depth, step, play_map):
     mc_globals.rest_highest_test_step()
     play_map = simplify_game_data(play_map)
     for i in range(test_depth):
-        print(i)
         start_new_thread(_move_iteration, (i, step, play_map, ))
 
 
