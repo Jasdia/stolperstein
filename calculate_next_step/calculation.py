@@ -83,19 +83,28 @@ def _set_move(position, action, play_map):
         elif fmod(api_globals.amount_of_moves, 6) != 0 or n == 1 or n == play_map.players[position].speed:
             # Checks whether the cell is blocked by some player in this game.
             if play_map.cells[play_map.players[position].y][play_map.players[position].x] > 0:
+                play_map.players[position].surviving = False
                 # Checks whether the cell is blocked by some track from the game before.
-                if play_map.cells[play_map.players[position].y][play_map.players[position].x] == 10:
-                    play_map.players[position].surviving = False
-                    return play_map
-                else:
+                if not play_map.cells[play_map.players[position].y][play_map.players[position].x] == 10:
                     # Identifies player and kills him too.
                     for idx, other in enumerate(play_map.players):
                         if other.player_id == play_map.cells[play_map.players[position].y][play_map.players[position].x]:
-                            play_map.players[idx].surviving = False
+                            if play_map.players[idx].surviving:
+                                play_map.players[idx].surviving = False
+                                for _ in range(play_map.players[idx].speed):
+                                    if not (play_map.players[idx].x == play_map.players[position].x and play_map.players[idx].y == play_map.players[position].y):
+                                        play_map.cells[play_map.players[idx].y][play_map.players[idx].x] = 0
+                                        play_map.players[idx].x = int(
+                                            play_map.players[idx].x - play_map.players[idx].direction[0])
+                                        play_map.players[idx].y = int(
+                                            play_map.players[idx].y - play_map.players[idx].direction[1])
+                            else:
+                                # TODO("Implement backwards-calculation")
+                                print("")
                             break
                     # Sets the field on 10, because both players are dead.
                     play_map.cells[play_map.players[position].y][play_map.players[position].x] = 10
-                    return play_map
+                return play_map
             # If the move is all right,sets the id on the cell.
             else:
                 play_map.cells[play_map.players[position].y][play_map.players[position].x] = play_map.players[position].player_id
