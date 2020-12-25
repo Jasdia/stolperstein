@@ -1,6 +1,7 @@
 # Python-libraries
 from json import loads
 from logging import info
+from pathlib import Path
 
 # The next action that will be performed by the bot.
 action: str
@@ -25,7 +26,8 @@ test_depth: int
 
 # this function must only be called in main.py
 def _init():
-    json_dict = loads(open("./api/config.json", "r").read())
+    _root_path = str(Path(__file__).parent.absolute())
+    json_dict = loads(open(_root_path + "/config.json", "r").read())
     # Sets the default-value to 'change_nothing' in case the function is too slow.
     reset_action()
     # Sets the value to one, because the number will be changed after every move.
