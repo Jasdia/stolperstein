@@ -1,13 +1,18 @@
-import unittest
-import os
+# Python-libraries
+from unittest import TestCase
+from os import walk
 from json import loads
 from pathlib import Path
 
-from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration
-from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
-from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+# Other modules from this project
+# global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
+# functions:
+from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration
+# dataclasses:
+from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
+from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
 
 def load_an_ManuelCalculatedGame_object(path: str, i: str):
@@ -32,7 +37,7 @@ def load_files(path: str, i: str):
     return test_data_class, parameters, result_data
 
 
-class TestCalculation(unittest.TestCase):
+class TestCalculation(TestCase):
 
     def __init__(self, *args, **kwargs):
         super(TestCalculation, self).__init__(*args, **kwargs)
@@ -42,7 +47,7 @@ class TestCalculation(unittest.TestCase):
 
     def test__set_move(self):
         path = self._root_path + "/_set_move"
-        files = next(os.walk(path))[2]
+        files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
@@ -57,7 +62,7 @@ class TestCalculation(unittest.TestCase):
 
     def test__test_all_options(self):
         path = self._root_path + "/_test_all_options"
-        files = next(os.walk(path))[2]
+        files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
@@ -71,7 +76,7 @@ class TestCalculation(unittest.TestCase):
 
     def test__move_iteration(self):
         path = self._root_path + "/_move_iteration"
-        files = next(os.walk(path))[2]
+        files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
