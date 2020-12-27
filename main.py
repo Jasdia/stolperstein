@@ -39,14 +39,16 @@ if __name__ == '__main__':
     # Just for Testing:
     from json import loads
     json_testfile = loads(open("./json_test_files/002.json", "r").read())
-    from calculate_next_step.calculation import start_calculation
+    from calculate_next_step.calculation import start_calculation, _test_all_options
+    from calculate_next_step.data_simplification import simplify_game_data
     import api.api_feedback_global_variables as api_globals
     # api_globals.amount_of_moves = 10
     # print(json_testfile)
     from multiprocessing import Value
     from ctypes import c_wchar_p
     action = Value(c_wchar_p, 'change_nothing')
-    start_calculation(2, 10, json_testfile, action, 10)
+    _test_all_options(1, 0, 0, simplify_game_data(json_testfile), 1, "turn_left", 10)
+    # start_calculation(2, 10, json_testfile, action, 10)
     # api_globals.game_as_class = map_json_to_dataclass(json_testfile)
     # create_grid(api_globals.game_as_class.cells, api_globals.game_as_class.players)
     # start_calculation(1)

@@ -1,6 +1,5 @@
 # Python-libraries
 from math import fmod
-# from _thread import start_new_thread
 from multiprocessing import Process, Value
 from logging import info, root, basicConfig, INFO
 from deprecated import deprecated
@@ -9,7 +8,6 @@ from copy import deepcopy
 # Other modules from this project
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
-# import api.api_feedback_global_variables as api_globals
 # functions:
 from calculate_next_step.data_simplification import simplify_game_data
 
@@ -19,12 +17,11 @@ from calculate_next_step.data_simplification import simplify_game_data
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
 def start_calculation(test_depth, step, play_map, action, amount_of_moves):
-    # mc_globals.rest_highest_test_step()
     play_map = simplify_game_data(play_map)
     highest_test_step = Value('i', -1)
     for i in range(test_depth):
-        Process(target=_move_iteration, args=(i, step, deepcopy(play_map), action, highest_test_step, amount_of_moves)).start()
-        # start_new_thread(_move_iteration, (i, step, play_map, ))
+        Process(target=_move_iteration,
+                args=(i, step, deepcopy(play_map), action, highest_test_step, amount_of_moves)).start()
 
 
 def _move_iteration(test_depth, step, play_map, action, highest_test_step, amount_of_moves):
@@ -131,11 +128,7 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
     if position == len(play_map.players):
         print(tested_move + " with depth " + str(test_depth) + " at position " + str(position))
         if not test_depth == 0:
-            # new_players = []
-            # for idx, player in enumerate(play_map['players']):
-            #     if player.surviving or idx == 0:
-            #         new_players.append(player)
-            # play_map['players'] = new_players
+            print("true")
             tmp_map = deepcopy(play_map)
             for column in range(0, tmp_map.height - 1):
                 for row in range(0, tmp_map.width - 1):
@@ -144,6 +137,7 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
             death_count, killed_count = _test_all_options(0, death_count, killed_count, tmp_map, test_depth - 1,
                                                           tested_move, amount_of_moves)
         else:
+            print("false")
             for index, player in enumerate(play_map.players):
                 if not player.surviving:
                     if index == 0:
@@ -154,55 +148,17 @@ def _test_all_options(position, death_count, killed_count, play_map, test_depth,
     else:
         # Iterates every possible action for the active player/ the player at this position.
         for move in mc_globals.move_list:
-            # Interprets the action by calling the function and changes the values of the player to the new action.
-            # play_map.players[position].direction, play_map.players[position].speed = _interpret_move(
-            #     play_map.players[position].direction[0],
-            #     play_map.players[position].direction[1],
-            #     play_map.players[position].speed,
-            #     move
-            # )
 
             # Calls the set_move-function to set the new action and checking whether the player survives.
             if play_map.players[position].surviving:
                 # Function calls itself (recursion)
                 death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
-                                                              _calculate_move(position, move, deepcopy(play_map), amount_of_moves),
+                                                              _calculate_move(position, move, deepcopy(play_map),
+                                                                              amount_of_moves),
                                                               test_depth, tested_move, amount_of_moves)
             else:
                 # Function calls itself (recursion)
-                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count, deepcopy(play_map),
+                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
+                                                              deepcopy(play_map),
                                                               test_depth, tested_move, amount_of_moves)
-
-            # Sets the death_count and killed_count in result if the first player (we) is re-reached and resets the
-            # values.
-            # if position == 0:
-            #     result = [result[0] + death_count, result[1] + killed_count]
-            #     death_count, killed_count = 0, 0
-            # Evaluates the combination if the last player is reached.
-            # if position == len(play_map.players) - 1 and test_depth == 0:
-            #     for index, player in enumerate(play_map.players):
-            #         if not player.surviving:
-            #             if index == 0:
-            #                 death_count += 1
-            #             else:
-            #                 killed_count += 1
-        # returns the current death_count and killed_count values.
         return death_count, killed_count
-
-
-# Translates the action (str) to the parameters of the player (sets new speed or changes direction with the x, y tuple).
-# This function doesn't change any value of the player directly, but returns the parameters.
-@deprecated(reason="Included in another function.")
-def _interpret_move(x, y, speed, action):
-    x_plus_y = x + y
-    if action == "turn_left":
-        x = fmod((x + x_plus_y), 2)
-        y = fmod((y - x_plus_y), 2)
-    elif action == "turn_right":
-        x = fmod((x - x_plus_y), 2)
-        y = fmod((y + x_plus_y), 2)
-    elif action == "slow_down":
-        speed -= 1
-    elif action == "speed_up":
-        speed += 1
-    return (x, y), speed
