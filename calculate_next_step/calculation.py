@@ -2,7 +2,6 @@
 from math import fmod
 from multiprocessing import Process, Value
 from logging import info, root, basicConfig, INFO
-from deprecated import deprecated
 from copy import deepcopy
 
 # Other modules from this project
@@ -32,7 +31,7 @@ def _move_iteration(test_depth, step, play_map, action, highest_test_step, amoun
     result = {}
     for move in mc_globals.move_list:
         play_map = _calculate_move(0, move, play_map, amount_of_moves)
-        result[move] = _test_all_options(1, 0, 0, play_map, test_depth, move, amount_of_moves)
+        _test_all_options(1, 0, 0, play_map, test_depth, amount_of_moves)
 
     next_action = mc_globals.move_list[0]
     for move in mc_globals.move_list:
@@ -56,7 +55,7 @@ def _move_iteration(test_depth, step, play_map, action, highest_test_step, amoun
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
 # def _set_move(player: ManuelCalculatedPlayer, field, players):
-def _calculate_move(position: int, action: str, play_map, amount_of_moves):
+def _calculate_move(position: int, action: str, play_map, is_not_6th_step):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
         play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] + x_plus_y), 2)
@@ -83,7 +82,7 @@ def _calculate_move(position: int, action: str, play_map, amount_of_moves):
             play_map.players[position].surviving = False
             return play_map
         # Checks if the player assigns the cell (because of the gap in the 6. move).
-        elif fmod(amount_of_moves, 6) != 0 or n == 1 or n == play_map.players[position].speed:
+        elif is_not_6th_step or n == 1 or n == play_map.players[position].speed:
             # Checks whether the cell is blocked by some player in this game.
             if play_map.cells[play_map.players[position].y][play_map.players[position].x] > 0:
                 play_map.players[position].surviving = False
@@ -122,43 +121,165 @@ def _calculate_move(position: int, action: str, play_map, amount_of_moves):
 # The position ist for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
-def _test_all_options(position, death_count, killed_count, play_map, test_depth, tested_move, amount_of_moves):
-    # End-Statement if there is no player left at the position.
-    # or if the calculation-depth is reached
-    if position == len(play_map.players):
-        print(tested_move + " with depth " + str(test_depth) + " at position " + str(position))
-        if not test_depth == 0:
-            print("true")
-            tmp_map = deepcopy(play_map)
-            for column in range(0, tmp_map.height - 1):
-                for row in range(0, tmp_map.width - 1):
-                    if tmp_map.cells[column][row] != 0:
-                        tmp_map.cells[column][row] = 10
-            death_count, killed_count = _test_all_options(0, death_count, killed_count, tmp_map, test_depth - 1,
-                                                          tested_move, amount_of_moves)
-        else:
-            print("false")
-            for index, player in enumerate(play_map.players):
-                if not player.surviving:
-                    if index == 0:
-                        death_count += 1
-                    else:
-                        killed_count += 1
-        return death_count, killed_count
-    else:
-        # Iterates every possible action for the active player/ the player at this position.
-        for move in mc_globals.move_list:
+def _test_all_options(position, death_count, killed_count, play_map, test_depth, is_not_6th_step, move_list):
+    processes = []
 
+    # Iterates every possible action for the active player/ the player at this position.
+    for move in move_list:
+        print("Depth: " + str(position) + " move: " + move)
+
+        if position == len(play_map.players) - 1:
+            if not test_depth == 0:
+                # print("true")
+                tmp_map = deepcopy(play_map)
+                for column in range(tmp_map.height):
+                    for row in range(tmp_map.width):
+                        if tmp_map.cells[column][row] != 0:
+                            tmp_map.cells[column][row] = 10
+                # death_count, killed_count = _test_all_options(0, death_count, killed_count, tmp_map, test_depth - 1,
+                #                                               amount_of_moves)
+                _test_all_options(0, death_count, killed_count, tmp_map, test_depth - 1, is_not_6th_step, move_list)
+            else:
+                # print("false")
+                for index, player in enumerate(play_map.players):
+                    if not player.surviving:
+                        if index == 0:
+                            with death_count.get_lock():
+                                death_count.value += 1
+                        else:
+                            with killed_count.get_lock():
+                                killed_count.value += 1
+        else:
             # Calls the set_move-function to set the new action and checking whether the player survives.
             if play_map.players[position].surviving:
                 # Function calls itself (recursion)
-                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
-                                                              _calculate_move(position, move, deepcopy(play_map),
-                                                                              amount_of_moves),
-                                                              test_depth, tested_move, amount_of_moves)
+                # death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
+                #                                               _calculate_move(position, move, deepcopy(play_map),
+                #                                                               amount_of_moves),
+                #                                               test_depth, amount_of_moves)
+                p = Process(target=_test_all_options, args=(position + 1, death_count, killed_count,
+                                                            _calculate_move(position, move, deepcopy(play_map),
+                                                                            is_not_6th_step), test_depth,
+                                                            is_not_6th_step, move_list))
+                processes.append(p)
+                p.start()
             else:
                 # Function calls itself (recursion)
-                death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
-                                                              deepcopy(play_map),
-                                                              test_depth, tested_move, amount_of_moves)
-        return death_count, killed_count
+                # death_count, killed_count = _test_all_options(position + 1, death_count, killed_count,
+                #                                               deepcopy(play_map),
+                #                                               test_depth, amount_of_moves)
+                p = Process(target=_test_all_options, args=(position + 1, death_count, killed_count, deepcopy(play_map),
+                                                            test_depth, is_not_6th_step, move_list))
+                processes.append(p)
+                p.start()
+
+    for process in processes:
+        process.join()
+    # return death_count, killed_count
+
+
+def _test_all_options_1(position, death_count, killed_count, play_map, test_depth, is_not_6th_step, move_list):
+    processes = []
+
+    # Iterates every possible action for the active player/ the player at this position.
+    for move in move_list:
+        print("Depth: " + str(position) + " move: " + move)
+
+        if not position == len(play_map['players']) - 1:
+            # Calls the set_move-function to set the new action and checking whether the player survives.
+            if play_map['players'][position]['surviving']:
+                # Function calls itself (recursion)
+                p = Process(target=_test_all_options_1, args=(position + 1, death_count, killed_count,
+                                                            _calculate_move_1(position, move, play_map,
+                                                                              is_not_6th_step), test_depth,
+                                                            is_not_6th_step, move_list))
+                processes.append(p)
+                p.start()
+            else:
+                # Function calls itself (recursion)
+                p = Process(target=_test_all_options_1, args=(position + 1, death_count, killed_count, play_map,
+                                                            test_depth, is_not_6th_step, move_list))
+                processes.append(p)
+                p.start()
+        else:
+            if not test_depth == 0:
+                tmp_map = play_map
+                for column in range(tmp_map['height']):
+                    for row in range(tmp_map['width']):
+                        if tmp_map['cells'][column][row] != 0:
+                            tmp_map['cells'][column][row] = 10
+                p = Process(target=_test_all_options_1,
+                            args=(0, death_count, killed_count, tmp_map, test_depth - 1, is_not_6th_step, move_list))
+                processes.append(p)
+                p.start()
+            else:
+                for index, player in enumerate(play_map['players']):
+                    if not player['surviving']:
+                        if index == 0:
+                            with death_count.get_lock():
+                                death_count.value += 1
+                        else:
+                            with killed_count.get_lock():
+                                killed_count.value += 1
+
+    for process in processes:
+        process.join()
+
+
+def _calculate_move_1(position: int, action: str, play_map: {str: any}, is_not_6th_step):
+    x_plus_y = play_map['players'][position]['direction'][0] + play_map['players'][position]['direction'][1]
+    if action == "turn_left":
+        play_map['players'][position]['direction'][0] = fmod((play_map['players'][position]['direction'][0] + x_plus_y), 2)
+        play_map['players'][position]['direction'][1] = fmod((play_map['players'][position]['direction'][1] - x_plus_y), 2)
+    elif action == "turn_right":
+        play_map['players'][position]['direction'][0] = fmod((play_map['players'][position]['direction'][0] - x_plus_y), 2)
+        play_map['players'][position]['direction'][1] = fmod((play_map['players'][position]['direction'][1] + x_plus_y), 2)
+    elif action == "slow_down":
+        play_map['players'][position]['speed'] -= 1
+    elif action == "speed_up":
+        play_map['players'][position]['speed'] += 1
+
+    # Checks speed for the given limits.
+    if not 1 <= play_map['players'][position]['speed'] <= 10:
+        play_map['players'][position]['surviving'] = False
+        return play_map
+
+    # Iterates every move of the player (cell by cell).
+    for n in range(1, play_map['players'][position]['speed'] + 1):
+        play_map['players'][position]['x'] = int(play_map['players'][position]['x'] + play_map['players'][position]['direction'][0])
+        play_map['players'][position]['y'] = int(play_map['players'][position]['y'] + play_map['players'][position]['direction'][1])
+        # Checks whether the player leaves the field.
+        if not (0 <= play_map['players'][position]['x'] < play_map['width'] and 0 <= play_map['players'][position]['y'] < play_map['height']):
+            play_map['players'][position]['surviving'] = False
+            return play_map
+        # Checks if the player assigns the cell (because of the gap in the 6. move).
+        elif is_not_6th_step or n == 1 or n == play_map['players'][position]['speed']:
+            # Checks whether the cell is blocked by some player in this game.
+            if play_map['cells'][play_map['players'][position]['y']][play_map['players'][position]['x']] > 0:
+                play_map['players'][position]['surviving'] = False
+                # Checks whether the cell is blocked by some track from the game before.
+                if not play_map['cells'][play_map['players'][position]['y']][play_map['players'][position]['x']] == 10:
+                    # Identifies player and kills him too.
+                    for idx, other in enumerate(play_map['players']):
+                        if other['player_id'] == play_map['cells'][play_map['players'][position]['y']][play_map['players'][position]['x']]:
+                            if play_map['players'][idx]['surviving']:
+                                play_map['players'][idx]['surviving'] = False
+                                for _ in range(play_map['players'][idx]['speed']):
+                                    if not (play_map['players'][idx]['x'] == play_map['players'][position]['x'] and play_map['players'][idx]['y'] == play_map['players'][position]['y']):
+                                        play_map['cells'][play_map['players'][idx]['y']][play_map['players'][idx]['x']] = 0
+                                        play_map['players'][idx]['x'] = int(
+                                            play_map['players'][idx]['x'] - play_map['players'][idx]['direction'][0])
+                                        play_map['players'][idx]['y'] = int(
+                                            play_map['players'][idx]['y'] - play_map['players'][idx]['direction'][1])
+                            else:
+                                # TODO("Implement backwards-calculation")
+                                print("")
+                            break
+                    # Sets the field on 10, because both players are dead.
+                    play_map['cells'][play_map['players'][position]['y']][play_map['players'][position]['x']] = 10
+                return play_map
+            # If the move is all right,sets the id on the cell.
+            else:
+                play_map['cells'][play_map['players'][position]['y']][play_map['players'][position]['x']] = play_map['players'][position]['player_id']
+    # Returns True if the player survives the action.
+    return play_map

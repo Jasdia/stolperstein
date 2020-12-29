@@ -42,3 +42,43 @@ def _simple_player_mapping(player: {str: any}, player_id: int):
         True,
         player_id
     )
+
+
+def simplify_game_data_1(play_map):
+    player_list = []
+    for player in play_map['players'].items():
+        if player[1]['active']:
+            simple_player = _simple_player_mapping_1(player[1], int(player[0]))
+            if not player[0] == str(play_map['you']):
+                player_list.append(simple_player)
+            else:
+                player_list.insert(0, simple_player)
+
+    for column in range(play_map['height']):
+        for row in range(play_map['width']):
+            if play_map['cells'][column][row] != 0:
+                play_map['cells'][column][row] = 10
+
+    return {'width': play_map['width'], 'height': play_map['height'], 'cells': play_map['cells'],
+            'players': player_list}
+
+
+# This function maps a Player on a SimplePlayer
+def _simple_player_mapping_1(player: {str: any}, player_id: int):
+    direction: (int, int)
+    if player['direction'] == "up":
+        direction = [0, -1]
+    elif player['direction'] == "right":
+        direction = [1, 0]
+    elif player['direction'] == "down":
+        direction = [0, 1]
+    else:
+        direction = [-1, 0]
+    return {
+        'x': player['x'],
+        'y': player['y'],
+        'direction': direction,
+        'speed': player['speed'],
+        'surviving': True,
+        'player_id': player_id
+    }
