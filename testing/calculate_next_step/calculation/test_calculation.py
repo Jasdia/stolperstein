@@ -68,7 +68,7 @@ class TestCalculation(TestCase):
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
 
-            result_data = (result_data["death_count"], result_data["killed_count"])
+            result_data = (result_data["death_count"], result_data["kill_count"])
             test_result = (Value("i", 0), Value("i", 0))
 
             _test_all_options(parameters["position"], test_result[0], test_result[1], test_data_class,
