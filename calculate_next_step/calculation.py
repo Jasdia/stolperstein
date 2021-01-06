@@ -64,7 +64,6 @@ def _move_iteration(test_depth: int, step: int, play_map: ManuelCalculatedGame, 
             with highest_test_step.get_lock():
                 highest_test_step.value = test_depth
             info("manuel_calculation finished with depth " + str(test_depth))
-            info(result)
             info("Answer decided to set to " + next_action)
         else:
             info("manuel_calculation with depth " + str(test_depth) + " finished too late")
@@ -147,17 +146,21 @@ def _test_all_options(position: int, death_count: Value, kill_count: Value, play
 
     # Iterates every possible action for the active player/ the player at this position.
     for move in move_list:
+        tmp_map = deepcopy(play_map)
+
+        # Calls the set_move-function to set the new action and checking whether the player survives.
+        if play_map.players[position].surviving:
+            tmp_map = _calculate_move(position, move, tmp_map, is_not_6th_step)
 
         if position == len(play_map.players) - 1:
             if not test_depth == 0:
-                tmp_map = deepcopy(play_map)
                 for column in range(tmp_map.height):
                     for row in range(tmp_map.width):
                         if tmp_map.cells[column][row] != 0:
                             tmp_map.cells[column][row] = 10
                 _test_all_options(0, death_count, kill_count, tmp_map, test_depth - 1, is_not_6th_step, move_list)
             else:
-                for index, player in enumerate(play_map.players):
+                for index, player in enumerate(tmp_map.players):
                     if not player.surviving:
                         if index == 0:
                             with death_count.get_lock():
@@ -166,21 +169,11 @@ def _test_all_options(position: int, death_count: Value, kill_count: Value, play
                             with kill_count.get_lock():
                                 kill_count.value += 1
         else:
-            # Calls the set_move-function to set the new action and checking whether the player survives.
-            if play_map.players[position].surviving:
-                # Function calls itself (recursion)
-                p = Process(target=_test_all_options, args=(position + 1, death_count, kill_count,
-                                                            _calculate_move(position, move, deepcopy(play_map),
-                                                                            is_not_6th_step), test_depth,
-                                                            is_not_6th_step, move_list))
-                processes.append(p)
-                p.start()
-            else:
-                # Function calls itself (recursion)
-                p = Process(target=_test_all_options, args=(position + 1, death_count, kill_count, deepcopy(play_map),
-                                                            test_depth, is_not_6th_step, move_list))
-                processes.append(p)
-                p.start()
+            # Function calls itself (recursion)
+            p = Process(target=_test_all_options, args=(position + 1, death_count, kill_count, deepcopy(play_map),
+                                                        test_depth, is_not_6th_step, move_list))
+            processes.append(p)
+            p.start()
 
     for process in processes:
         process.join()
