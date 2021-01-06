@@ -27,7 +27,9 @@ test_depth: int
 # this function must only be called in main.py
 def _init():
     _root_path = str(Path(__file__).parent.absolute())
-    json_dict = loads(open(_root_path + "/config.json", "r").read())
+    file = open(_root_path + "/config.json", "r")
+    json_dict = loads(file.read())
+    file.close()
     # Sets the default-value to 'change_nothing' in case the function is too slow.
     # reset_action()
     # Sets the value to one, because the number will be changed after every move.
