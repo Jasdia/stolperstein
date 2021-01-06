@@ -1,5 +1,5 @@
 {
   "amount_of_retrying_sending_an_answer": 10,
   "answer_time_for_the_bot": 1,
-  "test_depth": 0
+  "test_depth": 1
 }
