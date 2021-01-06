@@ -72,7 +72,7 @@ def _move_iteration(test_depth: int, step: int, play_map: ManuelCalculatedGame, 
 
 # Calculates a move of one player. The position is needed to get the right filed.
 # It sets the track of the move (as id on the field) and returns True or False whether the player survives.
-# def _set_move(player: ManuelCalculatedPlayer, field, players):
+# def _calculate_move(player: ManuelCalculatedPlayer, field, players):
 def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, is_not_6th_step: bool):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":

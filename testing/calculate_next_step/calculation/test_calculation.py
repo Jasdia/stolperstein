@@ -46,7 +46,7 @@ class TestCalculation(TestCase):
         mc_globals._init()
 
     def test__calculate_move(self):
-        path = self._root_path + "/_set_move"
+        path = self._root_path + "/_calculate_move"
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
@@ -57,7 +57,7 @@ class TestCalculation(TestCase):
 
             test_result = _calculate_move(parameters["position"], parameters["action"], test_data_class,
                                           parameters["is_not_6th_step"])
-            self.assertEqual(result_data_class, test_result, msg="_set_move number: " + str(i) + " failed.")
+            self.assertEqual(result_data_class, test_result, msg="_calculate_move number: " + str(i) + " failed.")
 
     def test__test_all_options(self):
         path = self._root_path + "/_test_all_options"
