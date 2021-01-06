@@ -2,12 +2,12 @@
 from os import getenv
 from time import sleep
 from logging import info, error, critical
-from _thread import start_new_thread
+from multiprocessing import Process, Value
 from websockets import connect, exceptions
 from datetime import datetime
 from json import loads
 from traceback import print_exc
-
+from ctypes import c_wchar_p
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
@@ -21,20 +21,18 @@ URL = getenv('URL')
 KEY = getenv('KEY')
 api_url = f'{URL}?key={KEY}'
 
-# TODO("Implement amount_of_moves")
-
 
 # Connection and communication with the server.
 async def start_ws():
-    # TODO("Handle: websockets.exceptions.InvalidStatusCode: server rejected WebSocket connection: HTTP 429")
-    # TODO("Why is the connection this unstable?")
     try:
         async with connect(api_url, ping_interval=None) as websocket:
+            amount_of_moves = Value("i", 1)
             info("Connection established.")
             while True:
                 try:
                     play_map = loads(await websocket.recv())
                     info("Server-answer: " + str(play_map))
+                    action = Value(c_wchar_p, 'change_nothing')
 
                     # Disconnect from server if game is over.
                     if not play_map['running']:
@@ -47,8 +45,8 @@ async def start_ws():
                     if play_map['players'][str(play_map['you'])]['active']:
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
-                        start_new_thread(start_calculation,
-                                         (api_globals.test_depth, api_globals.amount_of_moves, play_map,))
+                        with amount_of_moves.get_lock():
+                            Process(target=start_calculation, args=(api_globals.test_depth, amount_of_moves.value, play_map, action, amount_of_moves))
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
@@ -65,11 +63,12 @@ async def start_ws():
                         for _ in range(api_globals.amount_of_retrying_sending_an_answer):
                             try:
                                 # Example of sending an answer for the server.
-                                await websocket.send(generated_json(f'{api_globals.action}'))
-                                info("answer sent: " + api_globals.action)
+                                with action.get_lock():
+                                    await websocket.send(generated_json(f'{action.value}'))
+                                    info("answer sent: " + action.value)
 
-                                api_globals.reset_action()
-                                api_globals.amount_of_moves += 1
+                                with amount_of_moves.get_lock():
+                                    amount_of_moves.value += 1
                                 # If message is send: break for-loop.
                                 break
                             # TODO("Specify exceptions...")
