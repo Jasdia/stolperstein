@@ -3,7 +3,8 @@ from unittest import TestCase
 from os import walk
 from json import loads
 from pathlib import Path
-from multiprocessing import Process, Value
+from multiprocessing import Value
+from ctypes import c_wchar_p
 
 # Other modules from this project
 # global variables (see conventions in *_global_variables.py):
@@ -83,10 +84,13 @@ class TestCalculation(TestCase):
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
 
-            api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
+            result_data = (result_data["action"], result_data["highest_test_step"])
+            action = Value(c_wchar_p, parameters["action"])
+            highest_test_step = Value("i", parameters["highest_test_step"])
+            amount_of_moves = Value("i", parameters["amount_of_moves"])
 
-            result_data = (result_data["api_globals.action"], result_data["mc_globals.highest_test_step"])
-
-            _move_iteration(parameters["test_depth"], parameters["step"], test_data_class)
-            test_result = (api_globals.action, mc_globals.highest_test_step)
-            self.assertEqual(result_data, test_result, msg="_test_all_options number: " + str(i) + " failed.")
+            _move_iteration(parameters["test_depth"], parameters["step"], test_data_class, action, highest_test_step,
+                            amount_of_moves)
+            with action.get_lock() and highest_test_step.get_lock():
+                self.assertEqual(result_data, (action.value, highest_test_step.value),
+                                 msg="_test_all_options number: " + str(i) + " failed.")
