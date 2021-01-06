@@ -45,19 +45,20 @@ class TestCalculation(TestCase):
         api_globals._init()
         mc_globals._init()
 
-    def test__set_move(self):
+    def test__calculate_move(self):
         path = self._root_path + "/_set_move"
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
 
-            api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
+            # api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
 
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
 
-            test_result = _calculate_move(parameters["position"], parameters["action"], test_data_class)
+            test_result = _calculate_move(parameters["position"], parameters["action"], test_data_class,
+                                          parameters["is_not_6th_step"])
             self.assertEqual(result_data_class, test_result, msg="_set_move number: " + str(i) + " failed.")
 
     def test__test_all_options(self):

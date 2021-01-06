@@ -1,5 +1,5 @@
 {
   "position": 0,
   "action": "slow_down",
-  "api_globals.amount_of_moves": 1
+  "is_not_6th_step": true
 }
