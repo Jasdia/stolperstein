@@ -45,7 +45,8 @@ async def start_ws():
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
                         with amount_of_moves.get_lock():
-                            Process(target=start_calculation, args=(api_globals.test_depth, amount_of_moves.value, play_map, action, amount_of_moves))
+                            Process(target=start_calculation, args=(api_globals.test_depth, amount_of_moves.value,
+                                                                    play_map, action, amount_of_moves)).start()
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
