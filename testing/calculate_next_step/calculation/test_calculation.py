@@ -52,8 +52,6 @@ class TestCalculation(TestCase):
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
 
-            # api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
-
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
 
