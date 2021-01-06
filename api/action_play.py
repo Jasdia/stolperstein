@@ -11,7 +11,6 @@ from ctypes import c_wchar_p
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
-from global_functions.json_class_mapper import map_json_to_dataclass
 from calculate_next_step.calculation import start_calculation
 # global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
