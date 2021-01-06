@@ -3,6 +3,7 @@ from unittest import TestCase
 from os import walk
 from json import loads
 from pathlib import Path
+from multiprocessing import Process, Value
 
 # Other modules from this project
 # global variables (see conventions in *_global_variables.py):
@@ -66,12 +67,14 @@ class TestCalculation(TestCase):
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i))
 
-            api_globals.amount_of_moves = parameters["api_globals.amount_of_moves"]
-
             result_data = (result_data["death_count"], result_data["killed_count"])
+            test_result = (Value("i", 0), Value("i", 0))
 
-            test_result = _test_all_options(parameters["position"], parameters["death_count"], parameters["killed_count"], test_data_class, parameters["test_depth"], parameters["tested_move"])
-            self.assertEqual(result_data, test_result, msg="_test_all_options number: " + str(i) + " failed.")
+            _test_all_options(parameters["position"], test_result[0], test_result[1], test_data_class,
+                              parameters["test_depth"], parameters["is_not_6th_step"], mc_globals.move_list)
+            with test_result[0].get_lock() and test_result[1].get_lock():
+                self.assertEqual(result_data, (test_result[0].value, test_result[1].value),
+                                 msg="_test_all_options number: " + str(i) + " failed.")
 
     def test__move_iteration(self):
         path = self._root_path + "/_move_iteration"
