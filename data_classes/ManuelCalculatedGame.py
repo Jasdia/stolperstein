@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 # Other modules from this project
 # classes:
-from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
 
 @dataclass

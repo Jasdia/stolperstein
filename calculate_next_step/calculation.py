@@ -10,15 +10,14 @@ import calculate_next_step.mc_global_variables as mc_globals
 # functions:
 from calculate_next_step.data_simplification import simplify_game_data
 # classes:
-from data_classes.api.Game import Game
-from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
+from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 
 
 # This function is called from outside to start all functions in this file.
 # It maps the players and the field on our locale variables.
 # Every pre-blocked field is set to 10.
 # At last it starts the test_all_options-function with the default-values (for recursion)
-def start_calculation(test_depth: int, step: int, play_map: Game, action: Value, amount_of_moves: Value):
+def start_calculation(test_depth: int, step: int, play_map: {str: any}, action: Value, amount_of_moves: Value):
     play_map = simplify_game_data(play_map)
     highest_test_step = Value('i', -1)
     for i in range(test_depth):

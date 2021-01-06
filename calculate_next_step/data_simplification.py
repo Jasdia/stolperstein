@@ -1,7 +1,7 @@
 # Other modules from this project
 # classes:
-from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
-from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
+from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 
 
 # Simplifies the data and maps Game on ManuelCalculatedGames

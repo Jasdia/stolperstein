@@ -13,8 +13,8 @@ import calculate_next_step.mc_global_variables as mc_globals
 # functions:
 from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration
 # dataclasses:
-from data_classes.manual_calculation.ManuelCalculatedGame import ManuelCalculatedGame
-from data_classes.manual_calculation.ManuelCalculatedPlayer import ManuelCalculatedPlayer
+from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
+from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
 
 def load_an_ManuelCalculatedGame_object(path: str, i: str):
