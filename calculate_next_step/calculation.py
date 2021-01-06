@@ -102,7 +102,7 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
         # Checks if the player assigns the cell (because of the gap in the 6. move).
         elif is_not_6th_step or n == 1 or n == play_map.players[position].speed:
             # Checks whether the cell is blocked by some player in this game.
-            if play_map.cells[play_map.players[position].y][play_map.players[position].x] > 0:
+            if not play_map.cells[play_map.players[position].y][play_map.players[position].x] == 0:
                 play_map.players[position].surviving = False
                 # Checks whether the cell is blocked by some track from the game before.
                 if not play_map.cells[play_map.players[position].y][play_map.players[position].x] == 10:
@@ -118,6 +118,8 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                                             play_map.players[idx].x - play_map.players[idx].direction[0])
                                         play_map.players[idx].y = int(
                                             play_map.players[idx].y - play_map.players[idx].direction[1])
+                                    else:
+                                        break
                             else:
                                 # TODO("Implement backwards-calculation")
                                 print("")

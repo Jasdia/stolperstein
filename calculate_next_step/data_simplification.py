@@ -15,9 +15,9 @@ def simplify_game_data(play_map):
             else:
                 player_list.insert(0, simple_player)
 
-    for column in range(0, play_map['height'] - 1):
-        for row in range(0, play_map['width'] - 1):
-            if play_map['cells'][column][row] != 0:
+    for column in range(play_map['height']):
+        for row in range(play_map['width']):
+            if not play_map['cells'][column][row] == 0:
                 play_map['cells'][column][row] = 10
 
     return ManuelCalculatedGame(play_map['width'], play_map['height'], play_map['cells'], player_list)
