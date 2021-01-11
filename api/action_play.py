@@ -11,9 +11,10 @@ from ctypes import c_wchar_p
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
-from calculate_next_step.calculation import start_calculation
+from calculate_next_step.simple_calculation import move_iteration
 # global variables (see conventions in *_global_variables.py):
 import api.api_feedback_global_variables as api_globals
+import calculate_next_step.mc_global_variables as mc_globals
 
 # Get values from environment-variables.
 URL = getenv('URL')
@@ -45,8 +46,8 @@ async def start_ws():
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
                         with amount_of_moves.get_lock():
-                            Process(target=start_calculation, args=(api_globals.test_depth, amount_of_moves.value,
-                                                                    play_map, action, amount_of_moves)).start()
+                            Process(target=move_iteration, args=(amount_of_moves.value, play_map, action,
+                                                                 amount_of_moves, mc_globals.move_list)).start()
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')

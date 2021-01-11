@@ -21,8 +21,10 @@ def start_calculation(test_depth: int, step: int, play_map: {str: any}, action: 
     play_map = simplify_game_data(play_map)
     highest_test_step = Value('i', -1)
     for i in range(test_depth):
-        Process(target=_move_iteration,
-                args=(i, step, deepcopy(play_map), action, highest_test_step, amount_of_moves)).start()
+        p = Process(target=_move_iteration,
+                    args=(i, step, deepcopy(play_map), action, highest_test_step, amount_of_moves))
+        p.start()
+        return p
 
 
 def _move_iteration(test_depth: int, step: int, play_map: ManuelCalculatedGame, action: Value, highest_test_step: Value,
