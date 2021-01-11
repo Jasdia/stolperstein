@@ -11,22 +11,25 @@ from ctypes import c_wchar_p
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 # functions:
-from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration
+from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration, start_calculation
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
 
 
-def load_an_ManuelCalculatedGame_object(path: str, i: str):
+def load_an_ManuelCalculatedGame_object(path: str, i: str, interpret_dataclass: bool):
     tmp_file = open(path + "/" + i + "_data.json", "r")
     test_data = loads(tmp_file.read())
     tmp_file.close()
-    test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
-    return ManuelCalculatedGame(**test_data)
+    if interpret_dataclass:
+        test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
+        return ManuelCalculatedGame(**test_data)
+    else:
+        return test_data
 
 
-def load_files(path: str, i: str):
-    test_data_class = load_an_ManuelCalculatedGame_object(path, i)
+def load_files(path: str, i: str, interpret_dataclass: bool):
+    test_data_class = load_an_ManuelCalculatedGame_object(path, i, interpret_dataclass)
 
     tmp_file = open(path + "/" + i + "_parameters.json", "r")
     parameters = loads(tmp_file.read())
@@ -52,7 +55,7 @@ class TestCalculation(TestCase):
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i))
+            test_data_class, parameters, result_data = load_files(path, str(i), True)
 
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
@@ -66,7 +69,7 @@ class TestCalculation(TestCase):
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i))
+            test_data_class, parameters, result_data = load_files(path, str(i), True)
 
             result_data = (result_data["death_count"], result_data["kill_count"])
             test_result = (Value("i", 0), Value("i", 0))
@@ -82,7 +85,7 @@ class TestCalculation(TestCase):
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i))
+            test_data_class, parameters, result_data = load_files(path, str(i), True)
 
             result_data = (result_data["action"], result_data["highest_test_step"])
             action = Value(c_wchar_p, parameters["action"])
@@ -93,4 +96,20 @@ class TestCalculation(TestCase):
                             amount_of_moves)
             with action.get_lock() and highest_test_step.get_lock():
                 self.assertEqual(result_data, (action.value, highest_test_step.value),
+                                 msg="_test_all_options number: " + str(i) + " failed.")
+
+    def test_start_calculation(self):
+        path = self._root_path + "/start_calculation"
+        files = next(walk(path))[2]
+        count = len(files)
+        for i in range(int(count / 3)):
+            test_data_class, parameters, result_data = load_files(path, str(i), False)
+
+            action = Value(c_wchar_p, parameters["action"])
+            amount_of_moves = Value("i", parameters["amount_of_moves"])
+
+            p = start_calculation(parameters["test_depth"], parameters["step"], test_data_class, action, amount_of_moves)
+            p.join()
+            with action.get_lock():
+                self.assertEqual(result_data["action"], action.value,
                                  msg="_test_all_options number: " + str(i) + " failed.")

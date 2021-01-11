@@ -1,7 +1,6 @@
 {
-  "test_depth": 0,
+  "test_depth": 1,
   "step": 1,
   "action": "change_nothing",
-  "highest_test_step": -1,
   "amount_of_moves": 1
 }
