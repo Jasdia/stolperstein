@@ -12,6 +12,7 @@ import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 # functions:
 from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration, start_calculation
+from calculate_next_step.simple_calculation import move_iteration
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
@@ -110,6 +111,22 @@ class TestCalculation(TestCase):
 
             p = start_calculation(parameters["test_depth"], parameters["step"], test_data_class, action, amount_of_moves)
             p.join()
+            with action.get_lock():
+                self.assertEqual(result_data["action"], action.value,
+                                 msg="_test_all_options number: " + str(i) + " failed.")
+
+    def test_move_iteration(self):
+        path = self._root_path + "/move_iteration"
+        files = next(walk(path))[2]
+        count = len(files)
+        for i in range(int(count / 3)):
+            test_data_class, parameters, result_data = load_files(path, str(i), False)
+
+            action = Value(c_wchar_p, parameters["action"])
+            amount_of_moves = Value("i", parameters["amount_of_moves"])
+
+            move_iteration(parameters["step"], test_data_class, action, amount_of_moves,
+                           mc_globals.move_list)
             with action.get_lock():
                 self.assertEqual(result_data["action"], action.value,
                                  msg="_test_all_options number: " + str(i) + " failed.")

@@ -46,8 +46,7 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
         with result[move][0].get_lock() and result[move][1].get_lock():
             if result[move][0].value < result[next_action][0].value:
                 next_action = move
-            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][
-                1].value:
+            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][1].value:
                 next_action = move
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
