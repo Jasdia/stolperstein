@@ -41,19 +41,20 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
     for process in processes:
         process.join()
 
-    next_action = move_list[0]
-    for move in move_list:
-        with result[move][0].get_lock() and result[move][1].get_lock():
-            if result[move][0].value < result[next_action][0].value:
-                next_action = move
-            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][1].value:
-                next_action = move
+    next_action = 0
+    for i in range(1, len(move_list)):
+        with result[move_list[i]][0].get_lock() and result[move_list[i]][1].get_lock():
+            if result[move_list[i]][0].value < result[move_list[next_action]][0].value:
+                next_action = i
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
+                    result[move_list[i]][1].value > result[move_list[next_action]][1].value:
+                next_action = i
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
             with action.get_lock():
                 action.value = next_action
             info("manuel_calculation finished for move " + str(amount_of_moves.value))
-            info("Answer decided to set to " + next_action)
+            info("Answer decided to set to " + str(next_action))
         else:
             info("manuel_calculation at move " + str(amount_of_moves.value) + " finished too late")
 

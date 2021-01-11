@@ -7,7 +7,7 @@ from websockets import connect, exceptions
 from datetime import datetime
 from json import loads
 from traceback import print_exc
-from ctypes import c_wchar_p
+from ctypes import c_int
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
@@ -32,7 +32,7 @@ async def start_ws():
                 try:
                     play_map = loads(await websocket.recv())
                     info("Server-answer: " + str(play_map))
-                    action = Value(c_wchar_p, 'change_nothing')
+                    action = Value(c_int, 0)
 
                     # Disconnect from server if game is over.
                     if not play_map['running']:
@@ -45,9 +45,10 @@ async def start_ws():
                     if play_map['players'][str(play_map['you'])]['active']:
                         info("We are still alive!")
                         # TODO("Smarter implementation with self-interruption and multi-answering.")
-                        with amount_of_moves.get_lock():
+                        with amount_of_moves.get_lock() and action.get_lock():
                             Process(target=move_iteration, args=(amount_of_moves.value, play_map, action,
                                                                  amount_of_moves, mc_globals.move_list)).start()
+                            print(action.value)
 
                         print("checkpoint 0")
 
@@ -70,13 +71,14 @@ async def start_ws():
                                 # Example of sending an answer for the server.
                                 with action.get_lock():
                                     print("checkpoint 3")
-                                    sendv = action.value
+                                    print(action.value)
+                                    sendv = mc_globals.move_list[action.value]
                                     print("checkpoint 4")
                                     tmp = generated_json(f'{sendv}')
                                     print("checkpoint 5")
                                     await websocket.send(tmp)
                                     print("checkpoint 6")
-                                    info("answer sent: " + action.value)
+                                    info("answer sent: " + mc_globals.move_list[action.value])
 
                                 with amount_of_moves.get_lock():
                                     amount_of_moves.value += 1
@@ -84,8 +86,17 @@ async def start_ws():
                                 break
                             # TODO("Specify exceptions...")
                             except Exception as exc:
-                                error(exc)
+                                error(exc.with_traceback())
                                 error("sending_issues: no answer sent...")
+                    else:
+                        # Set sleep-time before answering.
+                        deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
+                        sleep_time = (deadline - datetime.utcnow()).total_seconds()
+
+                        # Just waits if the deadline is in the future.
+                        # It could - for example - be the case, that the server sends an old json-file.
+                        if sleep_time > 0:
+                            sleep(sleep_time)
 
                 # TODO("Specify exceptions...")
                 except exceptions.ConnectionClosed as exc:
