@@ -27,10 +27,15 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
         tmp_map = _calculate_move(0, move, tmp_map, is_not_6th_step)
         death_count = Value("i", 0)
         kill_count = Value("i", 0)
-        p = Process(target=_test_all_options,
-                    args=(1, death_count, kill_count, tmp_map, is_not_6th_step, move_list))
-        processes.append(p)
-        p.start()
+        if len(tmp_map.players) == 1:
+            if not tmp_map.players[0].surviving:
+                with death_count.get_lock():
+                    death_count.value += 1
+        else:
+            p = Process(target=_test_all_options, args=(1, death_count, kill_count, tmp_map, is_not_6th_step,
+                                                        move_list))
+            processes.append(p)
+            p.start()
         result[move] = [death_count, kill_count]
 
     for process in processes:
@@ -41,7 +46,8 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
         with result[move][0].get_lock() and result[move][1].get_lock():
             if result[move][0].value < result[next_action][0].value:
                 next_action = move
-            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][1].value:
+            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][
+                1].value:
                 next_action = move
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
@@ -79,7 +85,8 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
         play_map.players[position].x = int(play_map.players[position].x + play_map.players[position].direction[0])
         play_map.players[position].y = int(play_map.players[position].y + play_map.players[position].direction[1])
         # Checks whether the player leaves the field.
-        if not (0 <= play_map.players[position].x < play_map.width and 0 <= play_map.players[position].y < play_map.height):
+        if not (0 <= play_map.players[position].x < play_map.width and 0 <= play_map.players[
+            position].y < play_map.height):
             play_map.players[position].surviving = False
             return play_map
         # Checks if the player assigns the cell (because of the gap in the 6. move).
@@ -91,11 +98,13 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                 if not play_map.cells[play_map.players[position].y][play_map.players[position].x] == 10:
                     # Identifies player and kills him too.
                     for idx, other in enumerate(play_map.players):
-                        if other.player_id == play_map.cells[play_map.players[position].y][play_map.players[position].x]:
+                        if other.player_id == play_map.cells[play_map.players[position].y][
+                            play_map.players[position].x]:
                             if play_map.players[idx].surviving:
                                 play_map.players[idx].surviving = False
                                 for _ in range(play_map.players[idx].speed):
-                                    if not (play_map.players[idx].x == play_map.players[position].x and play_map.players[idx].y == play_map.players[position].y):
+                                    if not (play_map.players[idx].x == play_map.players[position].x and
+                                            play_map.players[idx].y == play_map.players[position].y):
                                         play_map.cells[play_map.players[idx].y][play_map.players[idx].x] = 0
                                         play_map.players[idx].x = int(
                                             play_map.players[idx].x - play_map.players[idx].direction[0])
@@ -112,7 +121,8 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                 return play_map
             # If the move is all right,sets the id on the cell.
             else:
-                play_map.cells[play_map.players[position].y][play_map.players[position].x] = play_map.players[position].player_id
+                play_map.cells[play_map.players[position].y][play_map.players[position].x] = play_map.players[
+                    position].player_id
     # Returns True if the player survives the action.
     return play_map
 
