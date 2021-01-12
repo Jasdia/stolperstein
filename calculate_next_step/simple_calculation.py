@@ -46,12 +46,12 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
         with result[move_list[i]][0].get_lock() and result[move_list[i]][1].get_lock():
             if result[move_list[i]][0].value < result[move_list[next_action]][0].value:
                 next_action = i
-            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0].value and \
                     result[move_list[i]][1].value > result[move_list[next_action]][1].value:
                 next_action = i
-            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
-                    (result[move_list[i]][2].value < result[move_list[next_action]][2] or
-                     result[move_list[i]][3].value < result[move_list[next_action]][3]):
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0].value and \
+                    (result[move_list[i]][2] < result[move_list[next_action]][2] or
+                     result[move_list[i]][3] < result[move_list[next_action]][3]):
                 next_action = i
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
