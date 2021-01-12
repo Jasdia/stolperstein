@@ -28,7 +28,7 @@ def start_calculation(test_depth: int, step: int, play_map: {str: any}, action: 
 
 
 def _move_iteration(test_depth: int, step: int, play_map: ManuelCalculatedGame, action: Value, highest_test_step: Value,
-                    amount_of_moves: Value):
+                    amount_of_moves: Value, move_list: [str]):
     basicConfig()
     root.setLevel(INFO)
     info("manuel_calculation started with depth " + str(test_depth))
@@ -42,22 +42,29 @@ def _move_iteration(test_depth: int, step: int, play_map: ManuelCalculatedGame, 
         tmp_map = _calculate_move(0, move, tmp_map, is_not_6th_step)
         death_count = Value("i", 0)
         kill_count = Value("i", 0)
+        x_coif = tmp_map.width - tmp_map.players[0].x
+        y_coif = tmp_map.height - tmp_map.players[0].y
         p = Process(target=_test_all_options,
                     args=(1, death_count, kill_count, tmp_map, test_depth, is_not_6th_step, mc_globals.move_list))
         processes.append(p)
         p.start()
-        result[move] = [death_count, kill_count]
+        result[move] = [death_count, kill_count, x_coif, y_coif]
 
     for process in processes:
         process.join()
 
-    next_action = mc_globals.move_list[0]
-    for move in mc_globals.move_list:
-        with result[move][0].get_lock() and result[move][1].get_lock():
-            if result[move][0].value < result[next_action][0].value:
-                next_action = move
-            elif result[move][0].value == result[next_action][0] and result[move][1].value > result[next_action][1].value:
-                next_action = move
+    next_action = 0
+    for i in range(1, len(move_list)):
+        with result[move_list[i]][0].get_lock() and result[move_list[i]][1].get_lock():
+            if result[move_list[i]][0].value < result[move_list[next_action]][0].value:
+                next_action = i
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
+                    result[move_list[i]][1].value > result[move_list[next_action]][1].value:
+                next_action = i
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
+                    (result[move_list[i]][2].value < result[move_list[next_action]][2] or
+                     result[move_list[i]][3].value < result[move_list[next_action]][3]):
+                next_action = i
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step and test_depth > highest_test_step.value:
             with action.get_lock():

@@ -27,6 +27,8 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
         tmp_map = _calculate_move(0, move, tmp_map, is_not_6th_step)
         death_count = Value("i", 0)
         kill_count = Value("i", 0)
+        x_coif = tmp_map.width - tmp_map.players[0].x
+        y_coif = tmp_map.height - tmp_map.players[0].y
         if len(tmp_map.players) == 1:
             if not tmp_map.players[0].surviving:
                 with death_count.get_lock():
@@ -36,7 +38,7 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
                                                         move_list))
             processes.append(p)
             p.start()
-        result[move] = [death_count, kill_count]
+        result[move] = [death_count, kill_count, x_coif, y_coif]
 
     for process in processes:
         process.join()
@@ -49,12 +51,16 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
             elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
                     result[move_list[i]][1].value > result[move_list[next_action]][1].value:
                 next_action = i
+            elif result[move_list[i]][0].value == result[move_list[next_action]][0] and \
+                    (result[move_list[i]][2].value < result[move_list[next_action]][2] or
+                     result[move_list[i]][3].value < result[move_list[next_action]][3]):
+                next_action = i
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
             with action.get_lock():
                 action.value = next_action
             info("manuel_calculation finished for move " + str(amount_of_moves.value))
-            info("Answer decided to set to " + str(next_action))
+            info("Answer decided to set to " + str(move_list(next_action)))
         else:
             info("manuel_calculation at move " + str(amount_of_moves.value) + " finished too late")
 

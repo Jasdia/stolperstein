@@ -16,14 +16,12 @@ from calculate_next_step.simple_calculation import move_iteration
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 
-# Get values from environment-variables.
-URL = getenv('URL')
-KEY = getenv('KEY')
-api_url = f'{URL}?key={KEY}'
-
 
 # Connection and communication with the server.
 async def start_ws():
+    # Get values from environment-variables.
+    api_url = "{}?key={}".format(getenv('URL'), getenv('KEY'))
+
     try:
         async with connect(api_url, ping_interval=None) as websocket:
             amount_of_moves = Value("i", 1)
@@ -44,13 +42,9 @@ async def start_ws():
 
                     if play_map['players'][str(play_map['you'])]['active']:
                         info("We are still alive!")
-                        # TODO("Smarter implementation with self-interruption and multi-answering.")
                         with amount_of_moves.get_lock() and action.get_lock():
                             Process(target=move_iteration, args=(amount_of_moves.value, play_map, action,
                                                                  amount_of_moves, mc_globals.move_list)).start()
-                            print(action.value)
-
-                        print("checkpoint 0")
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
@@ -62,22 +56,13 @@ async def start_ws():
                         # It could - for example - be the case, that the server sends an old json-file.
                         if sleep_time > 0:
                             sleep(sleep_time)
-                        print("checkpoint 1")
 
                         # Retrying to send the answer to the server.
                         for _ in range(api_globals.amount_of_retrying_sending_an_answer):
                             try:
-                                print("checkpoint 2")
                                 # Example of sending an answer for the server.
                                 with action.get_lock():
-                                    print("checkpoint 3")
-                                    print(action.value)
-                                    sendv = mc_globals.move_list[action.value]
-                                    print("checkpoint 4")
-                                    tmp = generated_json(f'{sendv}')
-                                    print("checkpoint 5")
-                                    await websocket.send(tmp)
-                                    print("checkpoint 6")
+                                    await websocket.send(generated_json(f'{mc_globals.move_list[action.value]}'))
                                     info("answer sent: " + mc_globals.move_list[action.value])
 
                                 with amount_of_moves.get_lock():
