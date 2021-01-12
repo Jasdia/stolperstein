@@ -10,7 +10,7 @@ from ctypes import c_int
 # global variables:
 import global_variables as globals
 # functions:
-from calculate_next_step.simple_calculation import move_iteration, _calculate_move, _test_all_options
+from calculate_next_step.calculation import move_iteration, _calculate_move, _test_all_options
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer

@@ -11,7 +11,7 @@ from ctypes import c_int
 # Other modules from this project
 # functions:
 from api.json_answer import generated_json
-from calculate_next_step.simple_calculation import move_iteration
+from calculate_next_step.calculation import move_iteration
 # global variables:
 import global_variables as internal_globals
 
