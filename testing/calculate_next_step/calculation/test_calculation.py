@@ -4,7 +4,7 @@ from os import walk
 from json import loads
 from pathlib import Path
 from multiprocessing import Value
-from ctypes import c_wchar_p
+from ctypes import c_int
 
 # Other modules from this project
 # global variables (see conventions in *_global_variables.py):
@@ -75,7 +75,7 @@ class TestCalculation(TestCase):
             test_result = (Value("i", 0), Value("i", 0))
 
             _test_all_options(parameters["position"], test_result[0], test_result[1], test_data_class,
-                              parameters["test_depth"], parameters["is_not_6th_step"], mc_globals.move_list)
+                              parameters["is_not_6th_step"], mc_globals.move_list)
             with test_result[0].get_lock() and test_result[1].get_lock():
                 self.assertEqual(result_data, (test_result[0].value, test_result[1].value),
                                  msg="_test_all_options number: " + str(i) + " failed.")
@@ -87,11 +87,11 @@ class TestCalculation(TestCase):
         for i in range(int(count / 3)):
             test_data_class, parameters, result_data = load_files(path, str(i), False)
 
-            action = Value(c_wchar_p, parameters["action"])
+            action = Value(c_int, parameters["action"])
             amount_of_moves = Value("i", parameters["amount_of_moves"])
 
             move_iteration(parameters["step"], test_data_class, action, amount_of_moves,
                            mc_globals.move_list)
             with action.get_lock():
-                self.assertEqual(result_data["action"], action.value,
+                self.assertEqual(result_data["action"], mc_globals.move_list[action.value],
                                  msg="_test_all_options number: " + str(i) + " failed.")
