@@ -1,3 +1,5 @@
 {
+  "amount_of_retrying_sending_an_answer": 10,
+  "answer_time_for_the_bot": 1,
   "move_list": ["change_nothing", "slow_down", "turn_left", "turn_right", "speed_up"]
 }

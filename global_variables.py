@@ -7,6 +7,8 @@ from pathlib import Path
 amount_of_retrying_sending_an_answer: int
 # How many seconds should be subtracted from the deadline to answer the server.
 answer_time_for_the_bot: int
+# List of all possible moves defined by the server
+move_list: []
 
 
 # this function must only be called in main.py
@@ -20,3 +22,6 @@ def _init():
     global answer_time_for_the_bot
     answer_time_for_the_bot = json_dict['answer_time_for_the_bot']
     info("api_globals initialized.")
+    global move_list
+    move_list = json_dict["move_list"]
+    info("mc_globals initialized.")

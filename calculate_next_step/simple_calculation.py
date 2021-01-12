@@ -5,8 +5,6 @@ from logging import info, root, basicConfig, INFO
 from copy import deepcopy
 
 # Other modules from this project
-# global variables (see conventions in *_global_variables.py):
-# import calculate_next_step.mc_global_variables as mc_globals
 # functions:
 from calculate_next_step.data_simplification import simplify_game_data
 # classes:

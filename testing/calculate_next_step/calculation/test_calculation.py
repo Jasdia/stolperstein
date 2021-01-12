@@ -7,9 +7,8 @@ from multiprocessing import Value
 from ctypes import c_int
 
 # Other modules from this project
-# global variables (see conventions in *_global_variables.py):
-import api.api_feedback_global_variables as api_globals
-import calculate_next_step.mc_global_variables as mc_globals
+# global variables:
+import global_variables as globals
 # functions:
 from calculate_next_step.simple_calculation import move_iteration, _calculate_move, _test_all_options
 # dataclasses:
@@ -47,8 +46,7 @@ class TestCalculation(TestCase):
     def __init__(self, *args, **kwargs):
         super(TestCalculation, self).__init__(*args, **kwargs)
         self._root_path = str(Path(__file__).parent.absolute())
-        api_globals._init()
-        mc_globals._init()
+        globals._init()
 
     def test__calculate_move(self):
         path = self._root_path + "/_calculate_move"
@@ -75,7 +73,7 @@ class TestCalculation(TestCase):
             test_result = (Value("i", 0), Value("i", 0))
 
             _test_all_options(parameters["position"], test_result[0], test_result[1], test_data_class,
-                              parameters["is_not_6th_step"], mc_globals.move_list)
+                              parameters["is_not_6th_step"], globals.move_list)
             with test_result[0].get_lock() and test_result[1].get_lock():
                 self.assertEqual(result_data, (test_result[0].value, test_result[1].value),
                                  msg="_test_all_options number: " + str(i) + " failed.")
@@ -91,7 +89,7 @@ class TestCalculation(TestCase):
             amount_of_moves = Value("i", parameters["amount_of_moves"])
 
             move_iteration(parameters["step"], test_data_class, action, amount_of_moves,
-                           mc_globals.move_list)
+                           globals.move_list)
             with action.get_lock():
-                self.assertEqual(result_data["action"], mc_globals.move_list[action.value],
+                self.assertEqual(result_data["action"], globals.move_list[action.value],
                                  msg="_test_all_options number: " + str(i) + " failed.")

@@ -12,9 +12,8 @@ from ctypes import c_int
 # functions:
 from api.json_answer import generated_json
 from calculate_next_step.simple_calculation import move_iteration
-# global variables (see conventions in *_global_variables.py):
-import api.api_feedback_global_variables as api_globals
-import calculate_next_step.mc_global_variables as mc_globals
+# global variables:
+import global_variables as globals
 
 
 # Connection and communication with the server.
@@ -44,13 +43,13 @@ async def start_ws():
                         info("We are still alive!")
                         with amount_of_moves.get_lock() and action.get_lock():
                             Process(target=move_iteration, args=(amount_of_moves.value, play_map, action,
-                                                                 amount_of_moves, mc_globals.move_list)).start()
+                                                                 amount_of_moves, globals.move_list)).start()
 
                         # Set sleep-time before answering.
                         deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
                         sleep_time = (deadline - datetime.utcnow()).total_seconds()
                         # One second for answering.
-                        sleep_time -= api_globals.answer_time_for_the_bot
+                        sleep_time -= globals.answer_time_for_the_bot
 
                         # Just waits if the deadline is in the future.
                         # It could - for example - be the case, that the server sends an old json-file.
@@ -58,12 +57,12 @@ async def start_ws():
                             sleep(sleep_time)
 
                         # Retrying to send the answer to the server.
-                        for _ in range(api_globals.amount_of_retrying_sending_an_answer):
+                        for _ in range(globals.amount_of_retrying_sending_an_answer):
                             try:
                                 # Example of sending an answer for the server.
                                 with action.get_lock():
-                                    await websocket.send(generated_json(f'{mc_globals.move_list[action.value]}'))
-                                    info("answer sent: " + mc_globals.move_list[action.value])
+                                    await websocket.send(generated_json(f'{globals.move_list[action.value]}'))
+                                    info("answer sent: " + globals.move_list[action.value])
 
                                 with amount_of_moves.get_lock():
                                     amount_of_moves.value += 1
@@ -71,7 +70,6 @@ async def start_ws():
                                 break
                             # TODO("Specify exceptions...")
                             except Exception as exc:
-                                error(exc.with_traceback())
                                 error("sending_issues: no answer sent...")
                     else:
                         # Set sleep-time before answering.

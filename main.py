@@ -20,7 +20,7 @@ from logging import info, INFO, basicConfig, root
 from api.action_play import start_ws
 # global variables (see conventions in *_global_variables.py):
 import calculate_next_step.mc_global_variables as mc_globals
-import api.api_feedback_global_variables as api_globals
+import global_variables as api_globals
 
 if __name__ == '__main__':
     # Initialize all global-containers
