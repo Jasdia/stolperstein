@@ -71,8 +71,8 @@ async def start_ws():
                                     amount_of_moves.value += 1
                                 # If message is send: break for-loop.
                                 break
-                            # TODO("Specify exceptions...")
                             except Exception as exc:
+                                error(exc)
                                 error("sending_issues: no answer sent...")
                     else:
                         # Set sleep-time before answering.
