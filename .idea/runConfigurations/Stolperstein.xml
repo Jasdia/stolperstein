@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Stolpersteine" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="Stolperstein" type="PythonConfigurationType" factoryName="Python">
     <output_file path="$PROJECT_DIR$/logs/tmp_log.log" is_save="true" />
     <module name="stolperstein" />
     <option name="INTERPRETER_OPTIONS" value="" />
