@@ -60,7 +60,7 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
             with action.get_lock():
                 action.value = next_action
             info("manuel_calculation finished for move " + str(amount_of_moves.value))
-            info("Answer decided to set to " + str(move_list(next_action)))
+            info("Answer decided to set to " + str(move_list[next_action]))
         else:
             info("manuel_calculation at move " + str(amount_of_moves.value) + " finished too late")
 
