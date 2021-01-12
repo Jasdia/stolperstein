@@ -34,9 +34,12 @@ async def start_ws():
                     # Disconnect from server if game is over.
                     if not play_map['running']:
                         info("The game is over")
-                        for player in play_map['players'].values():
-                            if player['active']:
-                                info(player['name'] + " won the game!")
+                        for player in play_map['players'].items():
+                            if player[1]['active']:
+                                if player[0] == play_map['you']:
+                                    info("We won the game!")
+                                else:
+                                    info(player['name'] + " won the game!")
                         return
 
                     if play_map['players'][str(play_map['you'])]['active']:
