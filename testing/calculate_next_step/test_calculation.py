@@ -11,34 +11,10 @@ from ctypes import c_int
 import global_variables as globals
 # functions:
 from calculate_next_step.calculation import move_iteration, _calculate_move, _test_all_options
+from testing.calculate_next_step.loadingfunctions_for_the_test import load_files
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
-
-
-def load_an_ManuelCalculatedGame_object(path: str, i: str, interpret_dataclass: bool):
-    tmp_file = open(path + "/" + i + "_data.json", "r")
-    test_data = loads(tmp_file.read())
-    tmp_file.close()
-    if interpret_dataclass:
-        test_data["players"] = [ManuelCalculatedPlayer(**player) for player in test_data["players"].values()]
-        return ManuelCalculatedGame(**test_data)
-    else:
-        return test_data
-
-
-def load_files(path: str, i: str, interpret_dataclass: bool):
-    test_data_class = load_an_ManuelCalculatedGame_object(path, i, interpret_dataclass)
-
-    tmp_file = open(path + "/" + i + "_parameters.json", "r")
-    parameters = loads(tmp_file.read())
-    tmp_file.close()
-
-    tmp_file = open(path + "/" + str(i) + "_result.json", "r")
-    result_data = loads(tmp_file.read())
-    tmp_file.close()
-
-    return test_data_class, parameters, result_data
 
 
 class TestCalculation(TestCase):
@@ -53,7 +29,7 @@ class TestCalculation(TestCase):
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i), True)
+            test_data_class, parameters, result_data = load_files(path, str(i))
 
             result_data["players"] = [ManuelCalculatedPlayer(**player) for player in result_data["players"].values()]
             result_data_class = ManuelCalculatedGame(**result_data)
@@ -67,7 +43,7 @@ class TestCalculation(TestCase):
         files = next(walk(path))[2]
         count = len(files)
         for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i), True)
+            test_data_class, parameters, result_data = load_files(path, str(i))
 
             result_data = (result_data["death_count"], result_data["kill_count"])
             test_result = (Value("i", 0), Value("i", 0))
