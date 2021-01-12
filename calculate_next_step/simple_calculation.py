@@ -104,8 +104,7 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                 if not play_map.cells[play_map.players[position].y][play_map.players[position].x] == 10:
                     # Identifies player and kills him too.
                     for idx, other in enumerate(play_map.players):
-                        if other.player_id == play_map.cells[play_map.players[position].y][
-                            play_map.players[position].x]:
+                        if other.player_id == play_map.cells[play_map.players[position].y][play_map.players[position].x]:
                             if play_map.players[idx].surviving:
                                 play_map.players[idx].surviving = False
                                 for _ in range(play_map.players[idx].speed):

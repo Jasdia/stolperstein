@@ -11,8 +11,7 @@ from ctypes import c_wchar_p
 import api.api_feedback_global_variables as api_globals
 import calculate_next_step.mc_global_variables as mc_globals
 # functions:
-from calculate_next_step.calculation import _calculate_move, _test_all_options, _move_iteration, start_calculation
-from calculate_next_step.simple_calculation import move_iteration
+from calculate_next_step.simple_calculation import move_iteration, _calculate_move, _test_all_options
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 from data_classes.ManuelCalculatedPlayer import ManuelCalculatedPlayer
@@ -79,40 +78,6 @@ class TestCalculation(TestCase):
                               parameters["test_depth"], parameters["is_not_6th_step"], mc_globals.move_list)
             with test_result[0].get_lock() and test_result[1].get_lock():
                 self.assertEqual(result_data, (test_result[0].value, test_result[1].value),
-                                 msg="_test_all_options number: " + str(i) + " failed.")
-
-    def test__move_iteration(self):
-        path = self._root_path + "/_move_iteration"
-        files = next(walk(path))[2]
-        count = len(files)
-        for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i), True)
-
-            result_data = (result_data["action"], result_data["highest_test_step"])
-            action = Value(c_wchar_p, parameters["action"])
-            highest_test_step = Value("i", parameters["highest_test_step"])
-            amount_of_moves = Value("i", parameters["amount_of_moves"])
-
-            _move_iteration(parameters["test_depth"], parameters["step"], test_data_class, action, highest_test_step,
-                            amount_of_moves)
-            with action.get_lock() and highest_test_step.get_lock():
-                self.assertEqual(result_data, (action.value, highest_test_step.value),
-                                 msg="_test_all_options number: " + str(i) + " failed.")
-
-    def test_start_calculation(self):
-        path = self._root_path + "/start_calculation"
-        files = next(walk(path))[2]
-        count = len(files)
-        for i in range(int(count / 3)):
-            test_data_class, parameters, result_data = load_files(path, str(i), False)
-
-            action = Value(c_wchar_p, parameters["action"])
-            amount_of_moves = Value("i", parameters["amount_of_moves"])
-
-            p = start_calculation(parameters["test_depth"], parameters["step"], test_data_class, action, amount_of_moves)
-            p.join()
-            with action.get_lock():
-                self.assertEqual(result_data["action"], action.value,
                                  msg="_test_all_options number: " + str(i) + " failed.")
 
     def test_move_iteration(self):
