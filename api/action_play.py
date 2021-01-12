@@ -39,7 +39,7 @@ async def start_ws():
                                 if player[0] == play_map['you']:
                                     info("We won the game!")
                                 else:
-                                    info(player['name'] + " won the game!")
+                                    info(player[1]['name'] + " won the game!")
                         return
 
                     if play_map['players'][str(play_map['you'])]['active']:
