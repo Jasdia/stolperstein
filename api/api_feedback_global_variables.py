@@ -7,8 +7,6 @@ from pathlib import Path
 amount_of_retrying_sending_an_answer: int
 # How many seconds should be subtracted from the deadline to answer the server.
 answer_time_for_the_bot: int
-# test_depth for mc
-test_depth: int
 
 
 # this function must only be called in main.py
@@ -22,5 +20,3 @@ def _init():
     global answer_time_for_the_bot
     answer_time_for_the_bot = json_dict['answer_time_for_the_bot']
     info("api_globals initialized.")
-    global test_depth
-    test_depth = json_dict['test_depth']
