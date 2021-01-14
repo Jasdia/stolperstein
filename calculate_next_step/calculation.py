@@ -130,7 +130,6 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
     return play_map
 
 
-# TODO("Check if it really works!")
 # TODO("Check if comments are still right")
 # Recursive function for testing all possible moves of all players (every single combination).
 # Sets the result to mc_globals.result.
