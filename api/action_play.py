@@ -36,7 +36,7 @@ async def start_ws():
                         info("The game is over")
                         for player in play_map['players'].items():
                             if player[1]['active']:
-                                if player[0] == play_map['you']:
+                                if player[0] == str(play_map['you']):
                                     info("We won the game!")
                                 else:
                                     info(player[1]['name'] + " won the game!")
