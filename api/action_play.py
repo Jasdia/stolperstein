@@ -1,7 +1,7 @@
 # Python-libraries
 from os import getenv
 from time import sleep
-from logging import info, error, critical
+from logging import debug, info, error, critical
 from multiprocessing import Process, Value
 from websockets import connect, exceptions
 from datetime import datetime
@@ -28,7 +28,7 @@ async def start_ws():
             while True:
                 try:
                     play_map = loads(await websocket.recv())
-                    info("Server-answer: " + str(play_map))
+                    debug("Server-answer: " + str(play_map))
                     action = Value(c_int, 0)
 
                     # Disconnect from server if game is over.
