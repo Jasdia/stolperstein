@@ -84,7 +84,6 @@ async def start_ws():
                         if sleep_time > 0:
                             sleep(sleep_time)
 
-                # TODO("Specify exceptions...")
                 except exceptions.ConnectionClosed as exc:
                     if exc.code == 1006:
                         error("connection lost because of error 1006. Try reconnecting")

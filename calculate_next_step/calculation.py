@@ -87,8 +87,7 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
         play_map.players[position].x = int(play_map.players[position].x + play_map.players[position].direction[0])
         play_map.players[position].y = int(play_map.players[position].y + play_map.players[position].direction[1])
         # Checks whether the player leaves the field.
-        if not (0 <= play_map.players[position].x < play_map.width and 0 <= play_map.players[
-            position].y < play_map.height):
+        if not (0 <= play_map.players[position].x < play_map.width and 0 <= play_map.players[position].y < play_map.height):
             play_map.players[position].surviving = False
             return play_map
         # Checks if the player assigns the cell (because of the gap in the 6. move).
@@ -103,19 +102,20 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                         if other.player_id == play_map.cells[play_map.players[position].y][play_map.players[position].x]:
                             if play_map.players[idx].surviving:
                                 play_map.players[idx].surviving = False
-                                for _ in range(play_map.players[idx].speed):
-                                    if not (play_map.players[idx].x == play_map.players[position].x and
-                                            play_map.players[idx].y == play_map.players[position].y):
-                                        play_map.cells[play_map.players[idx].y][play_map.players[idx].x] = 0
-                                        play_map.players[idx].x = int(
-                                            play_map.players[idx].x - play_map.players[idx].direction[0])
-                                        play_map.players[idx].y = int(
-                                            play_map.players[idx].y - play_map.players[idx].direction[1])
-                                    else:
-                                        break
                             else:
                                 # TODO("Implement backwards-calculation")
                                 print("")
+
+                            for _ in range(play_map.players[idx].speed):
+                                if not (play_map.players[idx].x == play_map.players[position].x and
+                                        play_map.players[idx].y == play_map.players[position].y):
+                                    play_map.cells[play_map.players[idx].y][play_map.players[idx].x] = 0
+                                    play_map.players[idx].x = int(
+                                        play_map.players[idx].x - play_map.players[idx].direction[0])
+                                    play_map.players[idx].y = int(
+                                        play_map.players[idx].y - play_map.players[idx].direction[1])
+                                else:
+                                    break
                             break
                     # Sets the field on 10, because both players are dead.
                     play_map.cells[play_map.players[position].y][play_map.players[position].x] = 10
@@ -128,7 +128,6 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
     return play_map
 
 
-# TODO("Check if comments are still right")
 # Recursive function for testing all possible moves of all players (every single combination).
 # Sets the result to mc_globals.result.
 # The position ist for detecting the current player in the field and player-list.
