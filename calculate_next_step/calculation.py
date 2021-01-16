@@ -11,6 +11,8 @@ from calculate_next_step.data_simplification import simplify_game_data
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 
 
+# Iterates through every move we can make and evaluates which move will be the best by trying every combination the
+# could possible happen.
 def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_moves: Value, move_list: [str]):
     play_map = simplify_game_data(play_map)
     basicConfig()
@@ -49,10 +51,6 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
             elif result[move_list[i]][0].value == result[move_list[next_action]][0].value and \
                     result[move_list[i]][1].value > result[move_list[next_action]][1].value:
                 next_action = i
-            # elif result[move_list[i]][0].value == result[move_list[next_action]][0].value and \
-            #         (result[move_list[i]][2] < result[move_list[next_action]][2] or
-            #          result[move_list[i]][3] < result[move_list[next_action]][3]):
-            #     next_action = i
     with amount_of_moves.get_lock():
         if amount_of_moves.value == step:
             with action.get_lock():

@@ -1,5 +1,4 @@
 # Python-libraries
-from os import getenv
 from time import sleep
 from logging import debug, info, error, critical
 from multiprocessing import Process, Value
@@ -8,6 +7,7 @@ from datetime import datetime
 from json import loads
 from traceback import print_exc
 from ctypes import c_int
+
 # Other modules from this project
 # functions:
 from calculate_next_step.calculation import move_iteration
@@ -19,6 +19,7 @@ import global_variables as internal_globals
 async def start_ws(server):
     try:
         async with server as websocket:
+            # Starts the logic of the server-communication.
             await server_communication(server, websocket)
     except exceptions.InvalidStatusCode as exc:
         error(exc.args)
@@ -66,7 +67,7 @@ async def server_communication(server, websocket):
                 # Set sleep-time before answering.
                 deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
                 sleep_time = (deadline - datetime.utcnow()).total_seconds()
-                # One second for answering.
+                # Subtracts the pre-set answer-time from the timer.
                 sleep_time -= internal_globals.answer_time_for_the_bot
 
                 # Just waits if the deadline is in the future.
@@ -77,7 +78,6 @@ async def server_communication(server, websocket):
                 # Retrying to send the answer to the server.
                 for _ in range(internal_globals.amount_of_retrying_sending_an_answer):
                     try:
-                        # Example of sending an answer for the server.
                         with action.get_lock():
                             await websocket.send('{"action": "' + internal_globals.move_list[action.value] + '"}')
                             info("answer sent: " + internal_globals.move_list[action.value])
@@ -90,7 +90,7 @@ async def server_communication(server, websocket):
                         error(exc)
                         error("sending_issues: no answer sent...")
             else:
-                # Set sleep-time before answering.
+                # Set the sleep-time.
                 deadline = datetime.strptime(play_map['deadline'], '%Y-%m-%dT%H:%M:%SZ')
                 sleep_time = (deadline - datetime.utcnow()).total_seconds()
 

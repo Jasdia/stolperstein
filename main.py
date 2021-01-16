@@ -22,6 +22,7 @@ from websockets import connect
 from api.action_play import start_ws
 import global_variables as internal_globals
 
+# This function starts the bot.
 if __name__ == '__main__':
     # Initialize all global-containers
     internal_globals._init()
@@ -30,11 +31,10 @@ if __name__ == '__main__':
     basicConfig()
     root.setLevel(INFO)
 
-    # Get values from environment-variables.
+    # Get values from environment-variables and builds up the connection.
     api_url = "{}?key={}".format(getenv('URL'), getenv('KEY'))
     server = connect(api_url, ping_interval=None)
 
-
-    # Start contact to server
+    # Start communication with the server
     info("The bot has started...")
     get_event_loop().run_until_complete(start_ws(server))
