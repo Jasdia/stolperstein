@@ -100,7 +100,7 @@ async def start_ws(server):
         if exc.status_code == 429:
             info("try reconnecting in one minute...")
             sleep(60)
-            await start_ws()
+            await start_ws(server)
         else:
             critical(exc)
             critical(print_exc())
