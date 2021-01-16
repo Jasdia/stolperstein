@@ -24,7 +24,6 @@
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="DataSimplification" run_configuration_type="tests" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="Calculation" run_configuration_type="tests" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="JsonAnswer" run_configuration_type="tests" />
     </method>
   </configuration>
 </component>
