@@ -67,11 +67,11 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
 def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, is_not_6th_step: bool):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
-        play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] + x_plus_y), 2)
-        play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] - x_plus_y), 2)
+        play_map.players[position].direction[0] = int(fmod((play_map.players[position].direction[0] + x_plus_y), 2))
+        play_map.players[position].direction[1] = int(fmod((play_map.players[position].direction[1] - x_plus_y), 2))
     elif action == "turn_right":
-        play_map.players[position].direction[0] = fmod((play_map.players[position].direction[0] - x_plus_y), 2)
-        play_map.players[position].direction[1] = fmod((play_map.players[position].direction[1] + x_plus_y), 2)
+        play_map.players[position].direction[0] = int(fmod((play_map.players[position].direction[0] - x_plus_y), 2))
+        play_map.players[position].direction[1] = int(fmod((play_map.players[position].direction[1] + x_plus_y), 2))
     elif action == "slow_down":
         play_map.players[position].speed -= 1
     elif action == "speed_up":
@@ -100,20 +100,36 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
                     # Identifies player and kills him too.
                     for idx, other in enumerate(play_map.players):
                         if other.player_id == play_map.cells[play_map.players[position].y][play_map.players[position].x]:
-                            if play_map.players[idx].surviving:
+                            if other.surviving:
                                 play_map.players[idx].surviving = False
                             else:
-                                # TODO("Implement backwards-calculation")
-                                print("")
+                                tmp_player: int
+                                x_plus_y = other.direction[0] + other.direction[1]
+                                if not play_map.cells[other.y + other.direction[1]][other.x + other.direction[0]] == 0:
+                                    tmp_player = play_map.cells[other.y + other.direction[1]][other.x + other.direction[0]]
+                                elif not play_map.cells[other.y + int(fmod((other.direction[1] - x_plus_y), 2))][other.x + int(fmod((other.direction[0] + x_plus_y), 2))] == 0:
+                                    tmp_player = play_map.cells[other.y + int(fmod((other.direction[1] - x_plus_y), 2))][other.x + int(fmod((other.direction[0] + x_plus_y), 2))]
+                                elif not play_map.cells[other.y + int(fmod((other.direction[1] + x_plus_y), 2))][other.x + int(fmod((other.direction[0] - x_plus_y), 2))] == 0:
+                                    tmp_player = play_map.cells[other.y + int(fmod((other.direction[1] + x_plus_y), 2))][other.x + int(fmod((other.direction[0] - x_plus_y), 2))]
+                                else:
+                                    break
+                                play_map.players[tmp_player].surviving = True
+                                for _ in range(play_map.players[tmp_player].speed):
+                                    play_map.cells[play_map.players[tmp_player].y][play_map.players[tmp_player].x] = 0
+                                    play_map.players[tmp_player].x = int(play_map.players[tmp_player].x - play_map.players[tmp_player].direction[0])
+                                    play_map.players[tmp_player].y = int(play_map.players[tmp_player].y - play_map.players[tmp_player].direction[1])
+                                    if play_map.cells[play_map.players[tmp_player].y][play_map.players[tmp_player].x] == 10:
+                                        break
+                                _calculate_move(tmp_player, "change_nothing", play_map, is_not_6th_step)
+                                play_map.players[idx].x = int(play_map.players[idx].x - play_map.players[idx].direction[0])
+                                play_map.players[idx].y = int(play_map.players[idx].y - play_map.players[idx].direction[1])
 
                             for _ in range(play_map.players[idx].speed):
                                 if not (play_map.players[idx].x == play_map.players[position].x and
                                         play_map.players[idx].y == play_map.players[position].y):
                                     play_map.cells[play_map.players[idx].y][play_map.players[idx].x] = 0
-                                    play_map.players[idx].x = int(
-                                        play_map.players[idx].x - play_map.players[idx].direction[0])
-                                    play_map.players[idx].y = int(
-                                        play_map.players[idx].y - play_map.players[idx].direction[1])
+                                    play_map.players[idx].x = int(play_map.players[idx].x - play_map.players[idx].direction[0])
+                                    play_map.players[idx].y = int(play_map.players[idx].y - play_map.players[idx].direction[1])
                                 else:
                                     break
                             break
