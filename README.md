@@ -1,10 +1,8 @@
 
 ![Logo to the project](/logo_icon_small.jpg)
 
-
 Logo inspired by https\://www&#46;freepik.com/free-vector/futuristic-robot-constructor-flat-icon-set_8609178.html
-<span style="color:grey;">Logo inspired by https\://www&#46;freepik.com/free-vector/futuristic-robot-constructor-flat-icon-set_8609178.html
-</span>
+
 # Stolpersteine - a project for the InformatikCup 2021
 
 This is a bot playing spe_ed. Wanna try it? 
