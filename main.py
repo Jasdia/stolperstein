@@ -13,9 +13,8 @@
 
 # Python-libraries
 from asyncio import get_event_loop
-from logging import info, INFO, basicConfig, root
+from logging import info, INFO, basicConfig, root, DEBUG
 from os import getenv
-from websockets import connect
 
 # Other modules from this project
 # functions:
@@ -31,10 +30,6 @@ if __name__ == '__main__':
     basicConfig()
     root.setLevel(INFO)
 
-    # Get values from environment-variables and builds up the connection.
-    api_url = "{}?key={}".format(getenv('URL'), getenv('KEY'))
-    server = connect(api_url, ping_interval=None)
-
     # Start communication with the server
     info("The bot has started...")
-    get_event_loop().run_until_complete(start_ws(server))
+    get_event_loop().run_until_complete(start_ws())
