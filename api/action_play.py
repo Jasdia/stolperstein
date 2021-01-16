@@ -3,26 +3,22 @@ from os import getenv
 from time import sleep
 from logging import debug, info, error, critical
 from multiprocessing import Process, Value
-from websockets import connect, exceptions
+from websockets import exceptions
 from datetime import datetime
 from json import loads
 from traceback import print_exc
 from ctypes import c_int
 # Other modules from this project
 # functions:
-from api.json_answer import generated_json
 from calculate_next_step.calculation import move_iteration
 # global variables:
 import global_variables as internal_globals
 
 
 # Connection and communication with the server.
-async def start_ws():
-    # Get values from environment-variables.
-    api_url = "{}?key={}".format(getenv('URL'), getenv('KEY'))
-
+async def start_ws(server):
     try:
-        async with connect(api_url, ping_interval=None) as websocket:
+        async with server as websocket:
             amount_of_moves = Value("i", 1)
             info("Connection established.")
             while True:
@@ -64,7 +60,7 @@ async def start_ws():
                             try:
                                 # Example of sending an answer for the server.
                                 with action.get_lock():
-                                    await websocket.send(generated_json(f'{internal_globals.move_list[action.value]}'))
+                                    await websocket.send('{"action": "' + internal_globals.move_list[action.value] + '"}')
                                     info("answer sent: " + internal_globals.move_list[action.value])
 
                                 with amount_of_moves.get_lock():
@@ -88,7 +84,7 @@ async def start_ws():
                 except exceptions.ConnectionClosed as exc:
                     if exc.code == 1006:
                         error("connection lost because of error 1006. Try reconnecting")
-                        websocket = await connect(api_url, ping_interval=None)
+                        websocket = await server
                     else:
                         critical(exc)
                         critical(print_exc())
