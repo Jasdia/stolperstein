@@ -1,6 +1,6 @@
 # Test-overview:
 
-# _set_move():
+# _calculate_move():
 #  0: Player at position 0 - slow_down: set speed from 1 to 0
 #  1: Player at position 0 - speed_up: set speed from 10 to 11
 #  2: Player at position 4 - direction: left (move off the field)

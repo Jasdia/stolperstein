@@ -130,7 +130,7 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
 
 # Recursive function for testing all possible moves of all players (every single combination).
 # Sets the result to mc_globals.result.
-# The position ist for detecting the current player in the field and player-list.
+# The position is for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
 # killed_count counts how often other player die by a single action of us.
 def _test_all_options(position: int, death_count: Value, kill_count: Value, play_map: ManuelCalculatedGame,
