@@ -4,8 +4,6 @@ from os import walk
 from pathlib import Path
 
 # Other modules from this project
-# global variables:
-import global_variables as globals
 # functions:
 from testing.calculate_next_step.loadingfunctions_for_the_test import load_files
 from calculate_next_step.data_simplification import simplify_game_data, _simple_player_mapping
@@ -19,7 +17,6 @@ class TestDateSimplification(TestCase):
     def __init__(self, *args, **kwargs):
         super(TestDateSimplification, self).__init__(*args, **kwargs)
         self._root_path = str(Path(__file__).parent.absolute())
-        globals._init()
 
     def test_simplify_game_data(self):
         path = self._root_path + "/simplify_game_data"
