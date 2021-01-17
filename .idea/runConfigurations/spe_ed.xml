@@ -2,23 +2,11 @@
   <configuration default="false" name="spe_ed" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
     <deployment type="dockerfile">
       <settings>
-        <option name="imageTag" value="spe_ed" />
+        <option name="imageTag" value="stolperstein - spe_ed" />
         <option name="buildCliOptions" value="" />
         <option name="command" value="python main.py" />
-        <option name="containerName" value="run-spe_ed" />
+        <option name="containerName" value="run_stolperstein_-_spe_ed" />
         <option name="entrypoint" value="" />
-        <option name="envVars">
-          <list>
-            <DockerEnvVarImpl>
-              <option name="name" value="KEY" />
-              <option name="value" value="ZLZ5WGDWS6D7HOLVRSSOXF2GWU4ICALDK4POQ2FMAGKWUIXTDK3LI73M" />
-            </DockerEnvVarImpl>
-            <DockerEnvVarImpl>
-              <option name="name" value="URL" />
-              <option name="value" value="wss://msoll.de/spe_ed" />
-            </DockerEnvVarImpl>
-          </list>
-        </option>
         <option name="commandLineOptions" value="" />
         <option name="sourceFilePath" value="Dockerfile" />
       </settings>

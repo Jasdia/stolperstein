@@ -1,7 +1,7 @@
 venv/
-logs/
 testing/
 .idea/
 .gitignore
 .icon_rounded
 .logo_icon_small
+README.md
