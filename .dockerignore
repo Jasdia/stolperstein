@@ -1,4 +1,5 @@
 venv/
+icons/
 testing/
 .idea/
 .gitignore
@@ -6,6 +7,4 @@ testing/
 .logo_icon_small
 README.md
 stolperstein-spe_ed.tar
-icon_rounded.png
-logo_icon_small.jpg
 Dokumentation_Stolperstein.pdf
