@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Other modules from this project
 # functions:
-from testing.calculate_next_step.loadingfunctions_for_the_test import load_files
+from testing.loadingfunctions_for_the_test import load_files
 from calculate_next_step.data_simplification import simplify_game_data, _simple_player_mapping
 # dataclasses:
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
