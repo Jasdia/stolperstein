@@ -1,0 +1,10 @@
+venv/
+icons/
+testing/
+.idea/
+.gitignore
+.icon_rounded
+.logo_icon_small
+README.md
+stolperstein-spe_ed.tar
+Dokumentation_Stolperstein.pdf
