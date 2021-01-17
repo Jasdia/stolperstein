@@ -11,7 +11,7 @@ from calculate_next_step.data_simplification import simplify_game_data
 from data_classes.ManuelCalculatedGame import ManuelCalculatedGame
 
 
-# Iterates through every move we can make and evaluates which move will be the best by trying every combination the
+# Iterates through every move we can make and evaluates which move will be the best by trying every combination that
 # could possible happen.
 def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_moves: Value, move_list: [str]):
     play_map = simplify_game_data(play_map)
@@ -61,9 +61,8 @@ def move_iteration(step: int, play_map: {str: any}, action: Value, amount_of_mov
             info("manuel_calculation at move " + str(amount_of_moves.value) + " finished too late")
 
 
-# Calculates a move of one player. The position is needed to get the right filed.
-# It sets the track of the move (as id on the field) and returns True or False whether the player survives.
-# def _calculate_move(player: ManuelCalculatedPlayer, field, players):
+# Calculates a move of one player. The position is needed to get the right player in the list.
+# It sets the track of the move (as id on the field) and returns the updated play_map.
 def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, is_not_6th_step: bool):
     x_plus_y = play_map.players[position].direction[0] + play_map.players[position].direction[1]
     if action == "turn_left":
@@ -140,15 +139,14 @@ def _calculate_move(position: int, action: str, play_map: ManuelCalculatedGame, 
             else:
                 play_map.cells[play_map.players[position].y][play_map.players[position].x] = play_map.players[
                     position].player_id
-    # Returns True if the player survives the action.
     return play_map
 
 
 # Recursive function for testing all possible moves of all players (every single combination).
-# Sets the result to mc_globals.result.
+# Assigns the result to multiprocessing-Values.
 # The position is for detecting the current player in the field and player-list.
 # death_count counts how often we die at a specific action (in every single combination).
-# killed_count counts how often other player die by a single action of us.
+# kill_count counts how often other player die by a single action of us.
 def _test_all_options(position: int, death_count: Value, kill_count: Value, play_map: ManuelCalculatedGame,
                       is_not_6th_step: bool, move_list: []):
     processes = []
@@ -157,10 +155,11 @@ def _test_all_options(position: int, death_count: Value, kill_count: Value, play
     for move in move_list:
         tmp_map = deepcopy(play_map)
 
-        # Calls the set_move-function to set the new action and checking whether the player survives.
+        # Calls the _calculate_move-function to set the new action and checking whether the player survives.
         if play_map.players[position].surviving:
             tmp_map = _calculate_move(position, move, tmp_map, is_not_6th_step)
 
+        # If the last player is reached, the result will be calculated here.
         if position == len(play_map.players) - 1:
             for index, player in enumerate(tmp_map.players):
                 if not player.surviving:
